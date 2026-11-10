@@ -1,0 +1,1894 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Laboratorio de Costos en Auditoría Médica</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: encabezado fijo con pestañas; cada unidad = banda de título + teoría en pestañas + simuladores como paneles de trabajo */
+:root{
+  --bg:#F1F4F5; --surface:#FFFFFF; --surface-2:#E8EDEF; --ink:#13181B; --muted:#56616A; --line:#D3DADE;
+  --accent:#FFB400; --accent-ink:#231800; --accent-soft:#FFF0C7; --accent-text:#8A5A00;
+  --teal:#0E7573; --teal-soft:#D6EEEC;
+  --good:#2D8650; --good-soft:#DCF0E3; --warn:#B87700; --warn-soft:#FAEACB; --crit:#BF3A2F; --crit-soft:#F7DDDA;
+  --font-display:"Space Grotesk","Segoe UI",system-ui,sans-serif;
+  --font-body:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --band:#13181B; --band-ink:#F2F5F6;
+  --r:12px; --shadow:0 1px 2px rgba(19,24,27,.06),0 6px 20px rgba(19,24,27,.06);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1215; --surface:#161B1F; --surface-2:#1F262B; --ink:#E9EEF0; --muted:#9AA6AF; --line:#2B343A;
+  --accent:#FFC233; --accent-ink:#1E1500; --accent-soft:#3A2E0E; --accent-text:#FFC94D;
+  --teal:#3DB5AE; --teal-soft:#123331;
+  --good:#4FBF7C; --good-soft:#15301F; --warn:#E3A62C; --warn-soft:#352812; --crit:#EE6A5E; --crit-soft:#3A1916;
+  --band:#080B0D; --band-ink:#E9EEF0; --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1215; --surface:#161B1F; --surface-2:#1F262B; --ink:#E9EEF0; --muted:#9AA6AF; --line:#2B343A;
+  --accent:#FFC233; --accent-ink:#1E1500; --accent-soft:#3A2E0E; --accent-text:#FFC94D;
+  --teal:#3DB5AE; --teal-soft:#123331;
+  --good:#4FBF7C; --good-soft:#15301F; --warn:#E3A62C; --warn-soft:#352812; --crit:#EE6A5E; --crit-soft:#3A1916;
+  --band:#080B0D; --band-ink:#E9EEF0; --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.25); color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+h1,h2,h3,h4{font-family:var(--font-display);line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+a{color:var(--teal)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+.num,.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+/* ---------- encabezado ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top-inner{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px 0;display:flex;flex-direction:column;gap:8px}
+.brand{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mark{width:30px;height:30px;border-radius:7px;background:var(--band);display:grid;place-items:center;flex:none}
+.mark i{display:block;width:6px;height:16px;background:var(--accent);margin:0 1.5px;border-radius:1px}
+.mark span{display:flex}
+.brand b{font-family:var(--font-display);font-size:16px}
+.brand small{color:var(--muted);font-size:12.5px}
+.tabs-nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin:0 -4px}
+.tabs-nav::-webkit-scrollbar{display:none}
+.tabs-nav a{flex:none;text-decoration:none;color:var(--muted);font-weight:600;font-size:13.5px;padding:9px 12px 11px;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs-nav a:hover{color:var(--ink)}
+.tabs-nav a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs-nav a .u{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-right:4px}
+
+main{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+section[data-view]{display:flex;flex-direction:column;gap:28px}
+
+/* ---------- piezas comunes ---------- */
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text)}
+.lead{font-size:17px;color:var(--muted);max-width:62ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.panel-head{padding:18px 20px 14px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.panel-head h3{font-size:20px}
+.panel-head p{color:var(--muted);font-size:14px;max-width:70ch;margin-top:4px}
+.panel-body{padding:18px 20px;display:flex;flex-direction:column;gap:16px}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.tag.sim{background:var(--accent-soft);color:var(--accent-text)}
+.tag.ilu{background:var(--surface-2)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:12px}
+.split{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:900px){.split{grid-template-columns:minmax(0,1fr)}}
+.mini h4{font-size:15.5px;margin-bottom:4px}
+.mini p{color:var(--muted);font-size:14px}
+.mini{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.mini .k{font-family:var(--font-mono);font-size:11.5px;color:var(--accent-text);font-weight:600;letter-spacing:.04em}
+ul.clean{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.note{font-size:13px;color:var(--muted)}
+.callout{display:flex;gap:12px;align-items:flex-start;background:var(--accent-soft);border-radius:10px;padding:12px 14px;font-size:14px}
+.callout b{color:var(--accent-text)}
+.callout.teal{background:var(--teal-soft)}
+.callout.teal b{color:var(--teal)}
+.callout .ic{flex:none;width:26px;height:26px;border-radius:50%;background:var(--band);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:13px;font-family:var(--font-display)}
+.insight{border-left:4px solid var(--accent);background:var(--surface-2);padding:10px 14px;border-radius:0 8px 8px 0;font-size:14.5px}
+.insight b{font-weight:700}
+
+/* botones y controles */
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:9px;font-weight:600;font-size:14px;cursor:pointer;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(.96)}
+.btn.dark{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.btn.sm{padding:5px 10px;font-size:13px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:8px;font-weight:600;font-size:13.5px;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+label.fld{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600;color:var(--muted);min-width:0}
+input[type=text],input[type=number],select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:14px;width:100%;min-width:0}
+textarea{resize:vertical;min-height:62px;line-height:1.45}
+input[type=number]{font-family:var(--font-mono)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.range-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center}
+.range-row output{font-family:var(--font-mono);font-weight:600;font-size:14px}
+
+/* pestañas internas */
+.ttabs{display:flex;gap:6px;flex-wrap:wrap;padding:14px 20px 0}
+.ttabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 13px;font-weight:600;font-size:13.5px;cursor:pointer;color:var(--muted)}
+.ttabs button[aria-selected="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tpanel{padding:18px 20px 22px;display:flex;flex-direction:column;gap:14px}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px}
+.kpi{background:var(--surface-2);border-radius:10px;padding:10px 12px;min-width:0}
+.kpi span{display:block;font-size:12px;color:var(--muted);font-weight:600}
+.kpi b{display:block;font-family:var(--font-mono);font-size:19px;font-variant-numeric:tabular-nums;margin-top:2px;overflow-wrap:anywhere}
+.kpi.good b{color:var(--good)} .kpi.warn b{color:var(--warn)} .kpi.crit b{color:var(--crit)} .kpi.acc{background:var(--accent-soft)}
+
+/* 3D */
+.stage{position:relative;height:380px;border-radius:10px;background:radial-gradient(ellipse at 50% 30%,var(--surface) 0%,var(--surface-2) 100%);border:1px solid var(--line);overflow:hidden;touch-action:pan-y}
+.stage canvas{display:block;width:100%!important;height:100%!important;cursor:grab}
+.stage canvas:active{cursor:grabbing}
+.stage .hint{position:absolute;left:10px;bottom:8px;font-size:11.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);padding:2px 8px;border-radius:999px;pointer-events:none}
+.stage .legend{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:12px;pointer-events:none}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+@media (max-width:600px){.stage{height:300px}.stage .legend{font-size:10.5px;padding:4px 7px;gap:2px}}
+.stage.tall{height:440px}
+@media (max-width:600px){.stage.tall{height:330px}}
+
+/* tablas */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{background:var(--surface-2);font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);white-space:nowrap}
+td.r,th.r{text-align:right}
+tr:last-child td{border-bottom:0}
+td input,td select{padding:5px 7px;font-size:13px}
+td input[type=number]{width:84px}
+td select{min-width:58px}
+.tot td{font-weight:700;background:var(--accent-soft)}
+.x{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:6px}
+.x:hover{color:var(--crit);background:var(--crit-soft)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:24px;align-items:center}
+@media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}}
+.hero h1{font-size:clamp(32px,5vw,52px);font-weight:700;letter-spacing:-.025em;margin:8px 0 12px}
+.hero h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--accent) 62%)}
+.unitcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px}
+.ucard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:8px;text-decoration:none;color:inherit;transition:transform .15s,border-color .15s}
+.ucard:hover{transform:translateY(-2px);border-color:var(--accent)}
+.ucard .n{font-family:var(--font-display);font-size:38px;font-weight:700;line-height:1;color:var(--accent-text)}
+.ucard h3{font-size:17px}
+.ucard p{color:var(--muted);font-size:14px}
+.ucard .tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+
+/* banda de unidad */
+.uband{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:center;background:var(--band);color:var(--band-ink);border:1px solid var(--line);border-radius:var(--r);padding:22px 24px}
+.uband .big{font-family:var(--font-display);font-size:clamp(56px,9vw,96px);font-weight:700;line-height:.85;color:var(--accent)}
+.uband h2{font-size:clamp(22px,3vw,30px);color:var(--band-ink)}
+.uband p{color:var(--band-ink);opacity:.82;font-size:14.5px;margin-top:8px;max-width:80ch}
+.uband .logro b{color:var(--accent)}
+@media (max-width:560px){.uband{grid-template-columns:minmax(0,1fr)}}
+.secthead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.secthead h2{font-size:22px}
+.secthead span{color:var(--muted);font-size:14px}
+
+/* flujos */
+.flow{display:flex;gap:0;flex-wrap:wrap}
+.flow .st{flex:1 1 130px;min-width:0;position:relative;background:var(--surface-2);padding:12px 14px 12px 22px;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,0 100%,14px 50%);margin-right:-6px;cursor:pointer;border:0;text-align:left}
+.flow .st:first-child{clip-path:polygon(0 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,0 100%);padding-left:14px}
+.flow .st b{display:block;font-family:var(--font-display);font-size:14.5px}
+.flow .st span{font-size:12px;color:var(--muted)}
+.flow .st[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.flow .st[aria-pressed="true"] span{color:var(--accent-ink);opacity:.8}
+.detail{background:var(--surface-2);border-radius:10px;padding:14px 16px;font-size:14.5px}
+
+/* tarjetas que se voltean */
+.flip{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:118px}
+.flip b{font-family:var(--font-display);font-size:15px}
+.flip .back{display:none;font-size:13.5px;color:var(--muted)}
+.flip[aria-expanded="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.flip[aria-expanded="true"] .back{display:block;color:var(--ink)}
+.flip .front{font-size:12.5px;color:var(--muted)}
+.flip[aria-expanded="true"] .front{display:none}
+
+/* checks del constructor */
+.checks{display:flex;flex-direction:column;gap:6px}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:13.5px}
+.chk i{flex:none;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:700;margin-top:1px}
+.chk.ok i{background:var(--good);color:var(--surface)}
+.chk.no i{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.meter{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.preview{background:var(--surface-2);border-radius:10px;padding:14px;font-size:14px;white-space:pre-wrap}
+
+/* checklist integrador */
+.ck{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)}
+.ck:last-child{border-bottom:0}
+.ck input{width:18px;height:18px;accent-color:var(--good);margin-top:2px;flex:none}
+.ck label{flex:1;font-size:14.5px;cursor:pointer}
+.ck .go{flex:none}
+.ring{width:84px;height:84px;flex:none}
+.prog-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+
+/* quiz */
+.q{display:flex;flex-direction:column;gap:10px}
+.q .opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;text-align:left;cursor:pointer;display:flex;gap:10px;align-items:flex-start;font-size:14.5px}
+.opt:hover{border-color:var(--muted)}
+.opt .l{flex:none;width:24px;height:24px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-weight:700;font-size:12.5px;font-family:var(--font-display)}
+.opt.ok{border-color:var(--good);background:var(--good-soft)}
+.opt.ok .l{background:var(--good);color:var(--surface)}
+.opt.bad{border-color:var(--crit);background:var(--crit-soft)}
+.opt.bad .l{background:var(--crit);color:var(--surface)}
+.opt:disabled{cursor:default}
+.fb{border-radius:10px;padding:10px 14px;font-size:14px}
+.fb.ok{background:var(--good-soft)} .fb.bad{background:var(--crit-soft)}
+.qbar{display:flex;gap:4px;flex-wrap:wrap}
+.qbar span{width:22px;height:6px;border-radius:9px;background:var(--surface-2)}
+.qbar span.ok{background:var(--good)} .qbar span.bad{background:var(--crit)} .qbar span.cur{background:var(--accent)}
+
+/* glosario */
+.gl{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px}
+.gl .mini b{font-family:var(--font-display);font-size:15px}
+
+/* svg */
+svg text{font-family:var(--font-body)}
+.svgwrap{width:100%;overflow-x:auto}
+.svgwrap svg{display:block;width:100%;height:auto;min-width:520px}
+
+/* fishbone */
+.ish-cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px}
+.ish-cat{background:var(--surface-2);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.ish-cat h4{font-size:14px}
+.ish-cat .row{display:flex;gap:4px}
+.cause{display:flex;gap:6px;align-items:center;font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:4px 6px}
+.cause span{flex:1;min-width:0;overflow-wrap:anywhere}
+.cause button.v{border:1px solid var(--line);background:var(--surface);border-radius:6px;font-size:11px;padding:1px 6px;cursor:pointer;color:var(--muted)}
+.cause button.v[aria-pressed="true"]{background:var(--good);color:var(--surface);border-color:var(--good)}
+
+.heat td{text-align:center;font-family:var(--font-mono);font-weight:600}
+footer{margin-top:40px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:16px;display:flex;flex-direction:column;gap:4px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"><span><i></i><i></i></span></div>
+      <b>Laboratorio de Costos en Auditoría Médica</b>
+      <small>Diplomado de Auditoría Médica · Autor: Gilmer Sánchez Valenzuela</small>
+    </div>
+    <nav class="tabs-nav" aria-label="Secciones">
+      <a href="#inicio">Inicio</a>
+      <a href="#unidad-1"><span class="u">U1</span>Calidad</a>
+      <a href="#unidad-2"><span class="u">U2</span>Procesos y costos</a>
+      <a href="#unidad-3"><span class="u">U3</span>Auditoría</a>
+      <a href="#unidad-4"><span class="u">U4</span>Mejora continua</a>
+      <a href="#integrador">Trabajo integrador</a>
+      <a href="#quiz">Autoevaluación</a>
+      <a href="#glosario">Glosario</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- ======================= INICIO ======================= -->
+<section data-view="inicio">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Curso Costos en auditoría médica</div>
+      <h1>Calidad y costo se auditan <em>juntos</em></h1>
+      <p class="lead">Teoría de las cuatro unidades, simuladores para practicar y una guía paso a paso del trabajo integrador. Cambia los datos, gira los gráficos 3D y observa cómo una falla de registro termina como una cuenta observada.</p>
+      <div class="btns" style="margin-top:18px">
+        <a class="btn primary" href="#unidad-1">Empezar por la Unidad 1</a>
+        <a class="btn" href="#integrador">Ir al trabajo integrador</a>
+      </div>
+    </div>
+    <div class="stage tall" id="heroStage">
+      <span class="hint">Arrastra para girar · toca un pilar para abrir la unidad</span>
+    </div>
+  </div>
+
+  <div class="unitcards">
+    <a class="ucard" href="#unidad-1"><span class="n">01</span><h3>Sistemas de calidad</h3><p>Donabedian, actores del sistema, ISO 9001 e ISO 7101, PHVA y costos de la calidad.</p><div class="tools"><span class="tag sim">Simulador 3D de costos de la calidad</span></div></a>
+    <a class="ucard" href="#unidad-2"><span class="n">02</span><h3>Procesos y requisitos</h3><p>Centros de costo, métodos de costeo, costo estándar, recorrido de la cuenta y control de la IAFAS.</p><div class="tools"><span class="tag sim">Costo estándar frente a real en 3D</span></div></a>
+    <a class="ucard" href="#unidad-3"><span class="n">03</span><h3>Auditoría y conformidad</h3><p>ISO 19011, tipos de auditoría de la NTS 029, muestreo, hallazgos y tipos de observación.</p><div class="tools"><span class="tag sim">Muestreo de 200 cuentas</span><span class="tag sim">Constructor de hallazgos</span></div></a>
+    <a class="ucard" href="#unidad-4"><span class="n">04</span><h3>Mejora continua</h3><p>Pareto, Ishikawa, cinco porqués, Lean, matriz de riesgos, tablero y beneficio del plan.</p><div class="tools"><span class="tag sim">Pareto 3D</span><span class="tag sim">Riesgos 3D</span><span class="tag sim">Escenarios</span></div></a>
+  </div>
+
+  <div class="grid3">
+    <div class="mini"><span class="k">PASO 1</span><h4>Lee la teoría de la unidad</h4><p>Cada unidad abre con su logro y los conceptos en pestañas cortas, con ejemplos de hospital.</p></div>
+    <div class="mini"><span class="k">PASO 2</span><h4>Practica en el simulador</h4><p>Mueve los controles y lee el recuadro amarillo: explica qué cambió y por qué.</p></div>
+    <div class="mini"><span class="k">PASO 3</span><h4>Avanza tu trabajo integrador</h4><p>Marca lo que terminaste en la guía del trabajo. Tu avance se guarda en este navegador.</p></div>
+  </div>
+  <p class="note">Las cifras de los simuladores son ilustrativas, pensadas para aprender. En el trabajo integrador usa datos de tu IPRESS, anonimizados.</p>
+</section>
+
+<!-- ======================= UNIDAD 1 ======================= -->
+<section data-view="unidad-1" hidden>
+  <div class="uband">
+    <div class="big">1</div>
+    <div>
+      <h2>Sistemas de calidad en costos en auditoría médica</h2>
+      <p class="logro"><b>Logro:</b> explica la relación entre calidad y costo en la atención de salud, identifica a los actores del sistema y selecciona herramientas de gestión de la calidad para reducir costos sin afectar la atención.</p>
+    </div>
+  </div>
+
+  <div class="panel" data-tabs>
+    <div class="panel-head"><div><h3>Teoría</h3><p>Seis ideas que sostienen el curso.</p></div></div>
+    <div class="ttabs" role="tablist">
+      <button role="tab" data-tab="d">Donabedian</button>
+      <button role="tab" data-tab="a">Actores</button>
+      <button role="tab" data-tab="p">Mecanismos de pago</button>
+      <button role="tab" data-tab="i">ISO 9001 e ISO 7101</button>
+      <button role="tab" data-tab="c">PHVA</button>
+      <button role="tab" data-tab="q">Costos de la calidad</button>
+    </div>
+    <div class="tpanel" data-panel="d">
+      <p>Avedis Donabedian (1988) propuso evaluar la calidad en tres dimensiones. Una falla en una de ellas casi siempre aparece después como costo.</p>
+      <div class="grid3">
+        <div class="mini"><span class="k">ESTRUCTURA</span><h4>Con qué se atiende</h4><p>Personal, equipos, guías de práctica clínica, historia clínica, sistemas de información.</p></div>
+        <div class="mini"><span class="k">PROCESO</span><h4>Qué se hace</h4><p>Pertinencia diagnóstica y terapéutica, registro, profilaxis antibiótica, oportunidad del alta.</p></div>
+        <div class="mini"><span class="k">RESULTADO</span><h4>Qué se logra</h4><p>Infecciones, reingresos, estancia, satisfacción y costo por caso.</p></div>
+      </div>
+      <div class="insight">Ejemplo: sin plantilla de evolución (estructura), las notas quedan incompletas (proceso) y la IAFAS observa la cuenta (resultado económico).</div>
+    </div>
+    <div class="tpanel" data-panel="a" hidden>
+      <div class="grid4">
+        <div class="mini"><span class="k">RECTOR</span><h4>MINSA</h4><p>Dicta las normas: NTS 029 de auditoría de la calidad y NTS 139 de historia clínica.</p></div>
+        <div class="mini"><span class="k">SUPERVISOR</span><h4>SUSALUD</h4><p>Supervisa a IAFAS e IPRESS y protege los derechos de los usuarios.</p></div>
+        <div class="mini"><span class="k">FINANCIA</span><h4>IAFAS</h4><p>SIS, EsSalud, EPS y aseguradoras. Pagan y controlan lo que se les factura.</p></div>
+        <div class="mini"><span class="k">PRESTA</span><h4>IPRESS</h4><p>Hospitales, clínicas y centros de salud. Atienden, registran y facturan.</p></div>
+      </div>
+      <div class="insight">La auditoría médica se ubica entre la IPRESS y la IAFAS: comprueba que lo facturado se atendió, se registró y fue pertinente.</div>
+    </div>
+    <div class="tpanel" data-panel="p" hidden>
+      <div class="tw"><table>
+        <thead><tr><th>Mecanismo</th><th>Cómo paga</th><th>Incentivo</th><th>Riesgo a auditar</th></tr></thead>
+        <tbody>
+          <tr><td><b>Pago por servicio</b></td><td>Cada prestación por separado</td><td>Producir más</td><td>Sobreprestación</td></tr>
+          <tr><td><b>Pago por caso o paquete</b></td><td>Monto fijo por episodio</td><td>Eficiencia por caso</td><td>Subprestación, altas tempranas</td></tr>
+          <tr><td><b>Capitación</b></td><td>Monto por asegurado y periodo</td><td>Prevención</td><td>Restricción de acceso</td></tr>
+          <tr><td><b>Presupuesto</b></td><td>Asignación por periodo</td><td>Estabilidad</td><td>Poca relación con resultados</td></tr>
+        </tbody></table></div>
+      <p class="note">Cada mecanismo cambia lo que conviene auditar: en pago por servicio se mira la pertinencia de cada ítem; en pago por caso, la calidad del resultado.</p>
+    </div>
+    <div class="tpanel" data-panel="i" hidden>
+      <p>ISO 9001:2015 se basa en siete principios de gestión de la calidad. ISO 7101:2023 es la primera norma internacional de sistemas de gestión de la calidad hecha para organizaciones de salud. Toca cada principio para ver un ejemplo.</p>
+      <div class="grid4" id="isoFlips"></div>
+    </div>
+    <div class="tpanel" data-panel="c" hidden>
+      <div class="split">
+        <div class="svgwrap" style="overflow:visible"><svg id="phvaSvg" viewBox="0 0 360 300" role="img" aria-label="Ciclo PHVA" style="min-width:0;max-width:420px;margin:auto"></svg></div>
+        <div class="detail" id="phvaDetail"></div>
+      </div>
+    </div>
+    <div class="tpanel" data-panel="q" hidden>
+      <p>El modelo de costos de la calidad separa lo que se gasta para hacer bien las cosas de lo que cuesta hacerlas mal.</p>
+      <div class="grid4">
+        <div class="mini"><span class="k">PREVENCIÓN</span><h4>Evitar la falla</h4><p>Capacitación, guías, plantillas, mantenimiento preventivo.</p></div>
+        <div class="mini"><span class="k">EVALUACIÓN</span><h4>Detectarla</h4><p>Auditorías, listas de verificación, controles de laboratorio.</p></div>
+        <div class="mini"><span class="k">FALLA INTERNA</span><h4>Corregir antes del alta</h4><p>Exámenes repetidos, días-cama extra, cuentas devueltas internamente.</p></div>
+        <div class="mini"><span class="k">FALLA EXTERNA</span><h4>Llega al paciente o a la IAFAS</h4><p>Infecciones, reingresos, cuentas observadas o rechazadas, quejas.</p></div>
+      </div>
+      <div class="insight">Regla práctica: un sol bien puesto en prevención suele ahorrar varios en fallas. Compruébalo en el simulador de abajo.</div>
+    </div>
+  </div>
+
+  <div class="panel" id="sim-paf">
+    <div class="panel-head">
+      <div><h3>Simulador: costos de la calidad</h3><p>Mueve la inversión en prevención y en evaluación de un servicio de cirugía. Observa cómo cambian las fallas y el costo total.</p></div>
+      <span class="tag sim">Modelo didáctico · S/ miles al año</span>
+    </div>
+    <div class="panel-body">
+      <div class="split">
+        <div class="stage" id="pafStage"><span class="hint">Arrastra para girar</span>
+          <div class="legend"><span><i style="background:var(--teal)"></i>Prevención y evaluación</span><span><i style="background:var(--warn)"></i>Falla interna</span><span><i style="background:var(--crit)"></i>Falla externa</span><span><i style="background:var(--accent)"></i>Total</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+          <div class="range-row"><label class="fld" for="pafP">Prevención (capacitación, guías, plantillas)</label><output id="pafPo"></output><input type="range" id="pafP" min="0" max="240" step="5" value="40" style="grid-column:1/-1"></div>
+          <div class="range-row"><label class="fld" for="pafE">Evaluación (auditorías y controles)</label><output id="pafEo"></output><input type="range" id="pafE" min="0" max="240" step="5" value="30" style="grid-column:1/-1"></div>
+          <div class="kpis" id="pafKpis"></div>
+          <div class="insight" id="pafInsight"></div>
+          <div class="btns"><button class="btn sm" id="pafOpt">Ir al punto de menor costo</button><button class="btn sm" id="pafReset">Restablecer</button></div>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size:15px;margin-bottom:6px">Costo total según la inversión en prevención</h4>
+        <div class="svgwrap"><svg id="pafCurve" viewBox="0 0 640 230" style="max-width:860px" role="img" aria-label="Curva de costo total frente a prevención"></svg></div>
+      </div>
+      <div class="callout teal"><span class="ic">TI</span><div><b>Para tu trabajo integrador:</b> en la hoja U1_Diagnostico clasifica los costos de tu procedimiento en estas cuatro categorías. Si las fallas superan a la prevención, ya tienes un argumento para tu plan.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= UNIDAD 2 ======================= -->
+<section data-view="unidad-2" hidden>
+  <div class="uband">
+    <div class="big">2</div>
+    <div>
+      <h2>Procesos y requisitos en costos en auditoría médica</h2>
+      <p class="logro"><b>Logro:</b> analiza los procesos de atención y sus requisitos documentales y normativos para determinar el costo de las prestaciones y su sustento ante la IAFAS.</p>
+    </div>
+  </div>
+
+  <div class="panel" data-tabs>
+    <div class="panel-head"><div><h3>Teoría</h3><p>Dónde nace el costo y qué lo sostiene ante quien paga.</p></div></div>
+    <div class="ttabs" role="tablist">
+      <button role="tab" data-tab="c">Conceptos</button>
+      <button role="tab" data-tab="cc">Centros de costo</button>
+      <button role="tab" data-tab="m">Métodos</button>
+      <button role="tab" data-tab="e">Costo estándar</button>
+      <button role="tab" data-tab="r">Recorrido de la cuenta</button>
+      <button role="tab" data-tab="q">Requisitos y control</button>
+    </div>
+    <div class="tpanel" data-panel="c">
+      <div class="grid4">
+        <div class="mini"><span class="k">PROCESO</span><h4>Proceso</h4><p>Actividades que transforman recursos en una atención; por ejemplo, el proceso quirúrgico.</p></div>
+        <div class="mini"><span class="k">CENTRO DE COSTO</span><h4>Centro de costo</h4><p>Unidad que acumula costos: final, intermedio o de apoyo.</p></div>
+        <div class="mini"><span class="k">ASIGNACIÓN</span><h4>Directo e indirecto</h4><p>El directo se asigna sin dudas (un medicamento); el indirecto se reparte (limpieza, administración).</p></div>
+        <div class="mini"><span class="k">COMPORTAMIENTO</span><h4>Fijo y variable</h4><p>El fijo no cambia con el volumen (planilla); el variable crece con cada caso (insumos).</p></div>
+      </div>
+      <div class="insight">En una cesárea, la sutura es directa y variable; el sueldo del jefe de servicio es indirecto y fijo.</div>
+    </div>
+    <div class="tpanel" data-panel="cc" hidden>
+      <div class="flow">
+        <div class="st" style="cursor:default"><b>De apoyo</b><span>Administración, logística, mantenimiento, limpieza</span></div>
+        <div class="st" style="cursor:default"><b>Intermedios</b><span>Laboratorio, imágenes, farmacia, sala de operaciones</span></div>
+        <div class="st" style="cursor:default"><b>Finales</b><span>Hospitalización, consulta externa, emergencia</span></div>
+      </div>
+      <p>Los costos de apoyo e intermedios se distribuyen a los finales con criterios de asignación: metros cuadrados, horas, número de exámenes, kilos de ropa lavada. Un criterio mal elegido distorsiona el costo de cada servicio.</p>
+    </div>
+    <div class="tpanel" data-panel="m" hidden>
+      <div class="tw"><table>
+        <thead><tr><th>Método</th><th>Cómo funciona</th><th>Uso en auditoría</th></tr></thead>
+        <tbody>
+          <tr><td><b>Distribución directa</b></td><td>El apoyo se asigna directo a los finales</td><td>Simple, menos preciso</td></tr>
+          <tr><td><b>Distribución escalonada</b></td><td>En cascada: apoyo, intermedios, finales</td><td>Más realista</td></tr>
+          <tr><td><b>Costeo por actividades (ABC)</b></td><td>Actividades e inductores por paciente</td><td>Preciso; exige más datos</td></tr>
+          <tr><td><b>Costo estándar</b></td><td>Costo esperado según el protocolo</td><td>Comparar con el costo real</td></tr>
+        </tbody></table></div>
+    </div>
+    <div class="tpanel" data-panel="e" hidden>
+      <p>El costo estándar es la “receta” del procedimiento según la guía de práctica clínica: cuánto de cada recurso necesita un caso típico.</p>
+      <div class="detail mono" style="font-size:15px">Costo estándar = Σ (cantidad estándar × precio unitario) + indirectos asignados</div>
+      <div class="grid3">
+        <div class="mini"><h4>Recursos humanos</h4><p>Minutos de cada profesional × costo por minuto.</p></div>
+        <div class="mini"><h4>Medicamentos, insumos y apoyo diagnóstico</h4><p>Las cantidades que indica la guía.</p></div>
+        <div class="mini"><h4>Sala, hotelería e indirectos</h4><p>Tiempo de sala, días-cama esperados y la parte de apoyo y administración.</p></div>
+      </div>
+      <div class="insight">Índice de desviación = costo real ÷ costo estándar. Un 1,00 indica que coinciden; un 1,25, que el real supera en 25 % al estándar.</div>
+    </div>
+    <div class="tpanel" data-panel="r" hidden>
+      <p>Toca cada etapa del recorrido.</p>
+      <div class="flow" id="cuentaFlow"></div>
+      <div class="detail" id="cuentaDetail"></div>
+    </div>
+    <div class="tpanel" data-panel="q" hidden>
+      <div class="grid3">
+        <div class="mini"><span class="k">NTS 139-MINSA/2018/DGAIN</span><h4>Historia clínica</h4><p>Soporte legal de la atención y fuente principal de la auditoría.</p></div>
+        <div class="mini"><span class="k">GUÍAS</span><h4>Guías de práctica clínica</h4><p>El estándar de pertinencia del diagnóstico y del tratamiento.</p></div>
+        <div class="mini"><span class="k">NTS 029-MINSA/DIGEPRES-V.02</span><h4>Auditoría de la calidad</h4><p>Aprobada por R. M. 502-2016/MINSA.</p></div>
+        <div class="mini"><span class="k">IAFAS</span><h4>Formato de la IAFAS</h4><p>Por ejemplo, el FUA del SIS y sus reglas de consistencia.</p></div>
+        <div class="mini"><span class="k">CONVENIO</span><h4>Convenio y tarifario</h4><p>Precio y cobertura pactados.</p></div>
+        <div class="mini"><span class="k">PNUME</span><h4>Petitorio de medicamentos</h4><p>Lo que se puede dispensar y financiar.</p></div>
+      </div>
+      <h4 style="font-size:15.5px">Control prestacional del SIS (Directiva N.° 003-2023-SIS/GREP)</h4>
+      <div class="flow">
+        <div class="st" style="cursor:default"><b>Consistencia</b><span>Reglas automáticas al registrar el FUA</span></div>
+        <div class="st" style="cursor:default"><b>Evaluación</b><span>Médicos revisan y marcan observado o no</span></div>
+        <div class="st" style="cursor:default"><b>Levantamiento</b><span>La IPRESS sustenta o rectifica</span></div>
+        <div class="st" style="cursor:default"><b>Segunda evaluación</b><span>Se revisa lo sustentado</span></div>
+      </div>
+      <p class="note">Resultados posibles: no observado, sustentado, rectificado o rechazado; siete días hábiles por etapa. Lo rechazado no se reconoce para el pago.</p>
+    </div>
+  </div>
+
+  <div class="panel" id="sim-costo">
+    <div class="panel-head">
+      <div><h3>Simulador: costo estándar frente a costo real</h3><p>Ejemplo de cesárea. Cambia cantidades y precios, o reemplaza las filas por las de tu procedimiento. Las barras verdes son el estándar; las amarillas, el costo real.</p></div>
+      <span class="tag ilu">Cifras ilustrativas · S/ por caso</span>
+    </div>
+    <div class="panel-body">
+      <div class="split">
+        <div class="stage" id="costStage"><span class="hint">Arrastra para girar</span>
+          <div class="legend"><span><i style="background:var(--teal)"></i>Estándar</span><span><i style="background:var(--accent)"></i>Real</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+          <div class="grid2" style="gap:10px">
+            <label class="fld" for="tarifa">Tarifa de la IAFAS por caso (S/)<input type="number" id="tarifa" value="3300" min="0" step="50"></label>
+            <label class="fld" for="casos">Casos al año<input type="number" id="casos" value="1200" min="0" step="10"></label>
+          </div>
+          <div class="kpis" id="costKpis"></div>
+          <div class="insight" id="costInsight"></div>
+        </div>
+      </div>
+      <div class="tw"><table id="costTable">
+        <thead><tr><th>Componente</th><th>Descripción</th><th>Unidad</th><th class="r">Cant. estándar</th><th class="r">Precio (S/)</th><th class="r">Estándar (S/)</th><th class="r">Cant. real</th><th class="r">Real (S/)</th><th class="r">Desviación</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table></div>
+      <div class="btns"><button class="btn sm" id="costAdd">Agregar fila</button><button class="btn sm" id="costReset">Restablecer ejemplo</button><button class="btn sm" id="costClear">Vaciar para mi procedimiento</button></div>
+      <div class="callout teal"><span class="ic">TI</span><div><b>Para tu trabajo integrador:</b> estas mismas columnas están en la hoja U2_Costo_estandar del Excel. Toma las cantidades estándar de tu guía clínica, no del consumo real.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= UNIDAD 3 ======================= -->
+<section data-view="unidad-3" hidden>
+  <div class="uband">
+    <div class="big">3</div>
+    <div>
+      <h2>Auditoría y conformidad en costos en auditoría médica</h2>
+      <p class="logro"><b>Logro:</b> aplica los principios y el proceso de auditoría para evaluar la conformidad de las prestaciones y sus cuentas, formulando hallazgos sustentados en evidencia.</p>
+    </div>
+  </div>
+
+  <div class="panel" data-tabs>
+    <div class="panel-head"><div><h3>Teoría</h3><p>Auditar con criterio y evidencia, no por intuición.</p></div></div>
+    <div class="ttabs" role="tablist">
+      <button role="tab" data-tab="c">Conceptos ISO 19011</button>
+      <button role="tab" data-tab="p">Principios</button>
+      <button role="tab" data-tab="t">Tipos según la NTS 029</button>
+      <button role="tab" data-tab="m">Momentos y qué se revisa</button>
+      <button role="tab" data-tab="h">Hallazgo</button>
+      <button role="tab" data-tab="o">Observaciones</button>
+    </div>
+    <div class="tpanel" data-panel="c">
+      <div class="grid4">
+        <div class="mini"><span class="k">AUDITORÍA</span><h4>Proceso sistemático</h4><p>Independiente y documentado, para obtener evidencia y evaluarla de forma objetiva.</p></div>
+        <div class="mini"><span class="k">CRITERIO</span><h4>Lo que debía ser</h4><p>Guía clínica, NTS, convenio y tarifario.</p></div>
+        <div class="mini"><span class="k">EVIDENCIA</span><h4>Hechos verificables</h4><p>Historia clínica, FUA, kardex, recetas.</p></div>
+        <div class="mini"><span class="k">HALLAZGO</span><h4>Resultado de comparar</h4><p>Conformidad o no conformidad de la evidencia frente al criterio.</p></div>
+      </div>
+      <div class="insight">Sin criterio no hay hallazgo; sin evidencia no hay conclusión.</div>
+    </div>
+    <div class="tpanel" data-panel="p" hidden>
+      <p>ISO 19011:2018 propone siete principios. Toca cada uno.</p>
+      <div class="grid4" id="auditFlips"></div>
+    </div>
+    <div class="tpanel" data-panel="t" hidden>
+      <div class="grid3">
+        <div class="mini"><span class="k">MÉDICA</span><p>Médicos que no participaron en la atención revisan el acto médico.</p></div>
+        <div class="mini"><span class="k">EN SALUD</span><p>Otros profesionales de salud revisan el proceso de atención.</p></div>
+        <div class="mini"><span class="k">PROGRAMADA</span><p>Incluida en el plan anual de auditoría.</p></div>
+        <div class="mini"><span class="k">DE CASO</span><p>Ante un incidente con daño real o potencial.</p></div>
+        <div class="mini"><span class="k">DE GESTIÓN CLÍNICA</span><p>El conjunto de atenciones: registros, seguros y procesos. Aquí vive la auditoría de cuentas.</p></div>
+        <div class="mini"><span class="k">DIRIMENTE</span><p>Dispuesta por la autoridad ante conclusiones contradictorias.</p></div>
+      </div>
+    </div>
+    <div class="tpanel" data-panel="m" hidden>
+      <div class="flow">
+        <div class="st" style="cursor:default"><b>Concurrente</b><span>Durante la hospitalización</span></div>
+        <div class="st" style="cursor:default"><b>Retrospectiva</b><span>Después del alta, antes de facturar</span></div>
+        <div class="st" style="cursor:default"><b>Control de la IAFAS</b><span>El financiador revisa lo presentado</span></div>
+      </div>
+      <p>Cuanto más temprano se audita, menos se pierde. En cada cuenta se revisan seis aspectos:</p>
+      <div class="grid3">
+        <div class="mini"><h4>Identidad y cobertura</h4><p>Paciente acreditado y plan de cobertura.</p></div>
+        <div class="mini"><h4>Pertinencia diagnóstica</h4><p>Diagnóstico sustentado y bien codificado (CIE-10).</p></div>
+        <div class="mini"><h4>Pertinencia terapéutica</h4><p>Medicamentos e insumos con indicación.</p></div>
+        <div class="mini"><h4>Estancia y procedimientos</h4><p>Justificados por la evolución clínica.</p></div>
+        <div class="mini"><h4>Registro</h4><p>Notas completas, legibles, con firma y sello.</p></div>
+        <div class="mini"><h4>Valorización</h4><p>Códigos, cantidades y tarifas del convenio.</p></div>
+      </div>
+    </div>
+    <div class="tpanel" data-panel="h" hidden>
+      <div class="grid4">
+        <div class="mini"><span class="k">1 · CONDICIÓN</span><h4>Lo que se encontró</h4><p>El paciente estuvo 6 días en UCI.</p></div>
+        <div class="mini"><span class="k">2 · CRITERIO</span><h4>Lo que debía ser</h4><p>Criterios de alta de UCI cumplidos al día 4.</p></div>
+        <div class="mini"><span class="k">3 · CAUSA</span><h4>Por qué ocurrió</h4><p>Sin evaluación diaria de criterios de alta.</p></div>
+        <div class="mini"><span class="k">4 · EFECTO</span><h4>La consecuencia</h4><p>S/ 7 200 sin sustento y una cama bloqueada.</p></div>
+      </div>
+      <div class="insight">Sin causa no hay recomendación útil; sin efecto, nadie prioriza. Practica en el constructor de hallazgos.</div>
+    </div>
+    <div class="tpanel" data-panel="o" hidden>
+      <div class="tw"><table>
+        <thead><tr><th>Tipo</th><th>Ejemplo</th><th>Quién la levanta</th></tr></thead>
+        <tbody>
+          <tr><td><b>Médica</b></td><td>Medicamento sin indicación; estancia no justificada</td><td>Médico tratante</td></tr>
+          <tr><td><b>Administrativa</b></td><td>Falta documento de cobertura o firma</td><td>Admisión o seguros</td></tr>
+          <tr><td><b>Tarifaria</b></td><td>Precio distinto del convenio</td><td>Facturación</td></tr>
+          <tr><td><b>Registro y codificación</b></td><td>CIE-10 o procedimiento mal codificado</td><td>Codificación con el médico</td></tr>
+        </tbody></table></div>
+    </div>
+  </div>
+
+  <div class="panel" id="sim-muestreo">
+    <div class="panel-head">
+      <div><h3>Simulador: ¿qué cuentas auditar?</h3><p>Un hospital tiene 200 cuentas de hospitalización en el mes y un solo auditor. Cada cubo es una cuenta: su altura es el monto facturado. Elige el método de muestreo y el tamaño, audita y compara.</p></div>
+      <span class="tag ilu">Población simulada</span>
+    </div>
+    <div class="panel-body">
+      <div class="split">
+        <div class="stage tall" id="sampStage"><span class="hint">Arrastra para girar</span>
+          <div class="legend" id="sampLegend"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+          <div><div class="fld" style="margin-bottom:6px">Método de muestreo</div>
+            <div class="seg" id="sampMethod"><button data-v="rand" aria-pressed="true">Aleatorio</button><button data-v="risk" aria-pressed="false">Dirigido por riesgo</button><button data-v="mix" aria-pressed="false">Mixto</button></div></div>
+          <div class="range-row"><label class="fld" for="sampN">Tamaño de la muestra</label><output id="sampNo"></output><input type="range" id="sampN" min="10" max="80" step="5" value="30" style="grid-column:1/-1"></div>
+          <div class="btns"><button class="btn primary" id="sampRun">Auditar la muestra</button><button class="btn" id="sampReveal">Revelar la población</button><button class="btn sm" id="sampNew">Nueva población</button></div>
+          <div class="kpis" id="sampKpis"></div>
+          <div class="insight" id="sampInsight">Elige un método y pulsa <b>Auditar la muestra</b>.</div>
+          <p class="note" id="sampMethodNote"></p>
+        </div>
+      </div>
+      <div class="callout teal"><span class="ic">TI</span><div><b>Para tu trabajo integrador:</b> audita al menos 15 cuentas (5 por integrante). Si quieres estimar la tasa de error de todo el servicio, incluye una parte aleatoria; si quieres proteger el ingreso, agrega las de mayor riesgo.</div></div>
+    </div>
+  </div>
+
+  <div class="panel" id="sim-hallazgo">
+    <div class="panel-head">
+      <div><h3>Constructor de hallazgos</h3><p>Escribe un hallazgo de tu muestra. La lista de la derecha revisa si cumple los cuatro atributos mientras escribes.</p></div>
+      <div class="btns"><button class="btn sm" id="hzEx">Cargar ejemplo</button><button class="btn sm" id="hzClear">Limpiar</button></div>
+    </div>
+    <div class="panel-body">
+      <div class="split">
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+          <label class="fld" for="hzTit">Título<input type="text" id="hzTit"></label>
+          <label class="fld" for="hzCond">Condición: lo que encontraste, con número y muestra<textarea id="hzCond"></textarea></label>
+          <label class="fld" for="hzCrit">Criterio: la norma, guía o convenio<textarea id="hzCrit"></textarea></label>
+          <label class="fld" for="hzCausa">Causa: por qué ocurrió<textarea id="hzCausa"></textarea></label>
+          <label class="fld" for="hzEf">Efecto: la consecuencia<textarea id="hzEf"></textarea></label>
+          <div class="grid2" style="gap:10px">
+            <label class="fld" for="hzSol">Efecto en soles (S/)<input type="number" id="hzSol" min="0" step="10"></label>
+            <label class="fld" for="hzResp">Responsable (cargo)<input type="text" id="hzResp"></label>
+          </div>
+          <label class="fld" for="hzRec">Recomendación<textarea id="hzRec"></textarea></label>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+          <div><div style="display:flex;justify-content:space-between;font-weight:600;font-size:14px;margin-bottom:6px"><span>Calidad del hallazgo</span><span class="mono" id="hzScore"></span></div><div class="meter"><i id="hzBar" style="width:0"></i></div></div>
+          <div class="checks" id="hzChecks"></div>
+          <div class="preview" id="hzPrev"></div>
+          <div class="btns"><button class="btn sm dark" id="hzCopy">Copiar el hallazgo</button><span class="note" id="hzCopied" aria-live="polite"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= UNIDAD 4 ======================= -->
+<section data-view="unidad-4" hidden>
+  <div class="uband">
+    <div class="big">4</div>
+    <div>
+      <h2>Mejora continua en costos en auditoría médica</h2>
+      <p class="logro"><b>Logro:</b> diseña una propuesta de mejora continua, priorizando causas con herramientas de calidad y estableciendo indicadores para su seguimiento.</p>
+    </div>
+  </div>
+
+  <div class="panel" data-tabs>
+    <div class="panel-head"><div><h3>Teoría</h3><p>Del hallazgo a un cambio que se sostiene.</p></div></div>
+    <div class="ttabs" role="tablist">
+      <button role="tab" data-tab="c">Conceptos</button>
+      <button role="tab" data-tab="h">Herramientas</button>
+      <button role="tab" data-tab="l">Lean</button>
+      <button role="tab" data-tab="t">Tablero</button>
+      <button role="tab" data-tab="p">Propuesta aplicada</button>
+    </div>
+    <div class="tpanel" data-panel="c">
+      <div class="grid4">
+        <div class="mini"><span class="k">ISO 9000</span><h4>Mejora continua</h4><p>Actividad recurrente para mejorar el desempeño.</p></div>
+        <div class="mini"><span class="k">ISO 9001 · 10.2</span><h4>Corrección y acción correctiva</h4><p>La corrección arregla la cuenta; la acción correctiva elimina la causa.</p></div>
+        <div class="mini"><span class="k">CAUSA RAÍZ</span><h4>Causa raíz</h4><p>La que, si se elimina, evita que el problema vuelva.</p></div>
+        <div class="mini"><span class="k">ESTANDARIZAR</span><h4>Estandarización</h4><p>Convertir lo que funcionó en la forma habitual de trabajar.</p></div>
+      </div>
+      <div class="insight">Corregir una cuenta observada es corrección. Cambiar la plantilla de evolución para que no falten datos es acción correctiva.</div>
+    </div>
+    <div class="tpanel" data-panel="h" hidden>
+      <div class="grid3">
+        <div class="mini"><span class="k">PRIORIZAR</span><h4>Pareto</h4><p>Pocos motivos explican la mayoría de las observaciones (regla 80/20).</p></div>
+        <div class="mini"><span class="k">EXPLORAR</span><h4>Ishikawa</h4><p>Causas posibles en seis categorías: personas, métodos, materiales, sistemas, medición y entorno.</p></div>
+        <div class="mini"><span class="k">PROFUNDIZAR</span><h4>Cinco porqués</h4><p>Preguntar “¿por qué?” hasta llegar a una causa que la IPRESS controla.</p></div>
+        <div class="mini"><span class="k">DECIDIR</span><h4>Matriz de riesgos</h4><p>Probabilidad × impacto: dónde actuar primero (ISO 9001, 6.1).</p></div>
+        <div class="mini"><span class="k">ACTUAR</span><h4>Plan PHVA</h4><p>Acciones con responsable, plazo, costo e indicador.</p></div>
+        <div class="mini"><span class="k">SEGUIR</span><h4>Tablero</h4><p>Línea base, meta, frecuencia y responsable por indicador.</p></div>
+      </div>
+    </div>
+    <div class="tpanel" data-panel="l" hidden>
+      <p>Lean elimina desperdicios: lo que consume recursos sin agregar valor al paciente.</p>
+      <div class="grid3">
+        <div class="mini"><span class="k">ESPERAS</span><p>Altas demoradas por resultados de exámenes.</p></div>
+        <div class="mini"><span class="k">SOBREPROCESAMIENTO</span><p>Exámenes repetidos.</p></div>
+        <div class="mini"><span class="k">INVENTARIO</span><p>Medicamentos vencidos.</p></div>
+        <div class="mini"><span class="k">MOVIMIENTOS</span><p>Traslados innecesarios del paciente.</p></div>
+        <div class="mini"><span class="k">DEFECTOS</span><p>Cuentas devueltas por errores.</p></div>
+        <div class="mini"><span class="k">TALENTO NO APROVECHADO</span><p>Auditores médicos digitando datos.</p></div>
+      </div>
+    </div>
+    <div class="tpanel" data-panel="t" hidden>
+      <div class="tw"><table>
+        <thead><tr><th>Indicador</th><th>Fórmula</th><th class="r">Línea base</th><th class="r">Meta</th><th>Frecuencia</th></tr></thead>
+        <tbody>
+          <tr><td>Cuentas observadas</td><td>Observadas / presentadas</td><td class="r num">18 %</td><td class="r num">8 %</td><td>Mensual</td></tr>
+          <tr><td>Historias clínicas completas</td><td>Cumplen criterios / auditadas</td><td class="r num">70 %</td><td class="r num">90 %</td><td>Mensual</td></tr>
+          <tr><td>Desviación de costo</td><td>Costo real / estándar</td><td class="r num">1,30</td><td class="r num">1,10</td><td>Trimestral</td></tr>
+          <tr><td>Recuperación</td><td>Sustentado / observado</td><td class="r num">45 %</td><td class="r num">70 %</td><td>Mensual</td></tr>
+        </tbody></table></div>
+      <p class="note">Valores ilustrativos. Sin meta ni responsable, nadie mira el tablero.</p>
+    </div>
+    <div class="tpanel" data-panel="p" hidden>
+      <div class="flow">
+        <div class="st" style="cursor:default"><b>Diagnosticar</b><span>Proceso y línea base</span></div>
+        <div class="st" style="cursor:default"><b>Analizar</b><span>Pareto e Ishikawa</span></div>
+        <div class="st" style="cursor:default"><b>Proponer</b><span>Responsable, plazo, costo</span></div>
+        <div class="st" style="cursor:default"><b>Medir</b><span>Línea base y meta</span></div>
+        <div class="st" style="cursor:default"><b>Estimar</b><span>Beneficio en soles</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="sim-pareto">
+    <div class="panel-head">
+      <div><h3>Simulador: Pareto 3D</h3><p>Escribe cuántas cuentas observadas tuvo cada motivo. El gráfico ordena los motivos y traza el porcentaje acumulado; los prioritarios se marcan en amarillo.</p></div>
+      <div class="btns"><button class="btn sm" id="parFromSamp">Usar los datos del muestreo (U3)</button><button class="btn sm" id="parReset">Restablecer ejemplo</button></div>
+    </div>
+    <div class="panel-body">
+      <div class="split">
+        <div class="stage" id="parStage"><span class="hint">Arrastra para girar</span>
+          <div class="legend"><span><i style="background:var(--accent)"></i>Prioritario</span><span><i style="background:var(--muted)"></i>Resto</span><span><i style="background:var(--teal)"></i>% acumulado</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+          <div class="tw"><table id="parTable"><thead><tr><th>Motivo</th><th class="r">Cuentas</th></tr></thead><tbody></tbody></table></div>
+          <div class="insight" id="parInsight"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="sim-ishikawa">
+    <div class="panel-head">
+      <div><h3>Ishikawa y cinco porqués</h3><p>Escribe causas posibles en cada categoría y márcalas como verificadas cuando tengas el dato. Luego profundiza la más fuerte con los cinco porqués.</p></div>
+      <div class="btns"><button class="btn sm" id="ishEx">Cargar ejemplo</button><button class="btn sm" id="ishClear">Limpiar</button></div>
+    </div>
+    <div class="panel-body">
+      <label class="fld" for="ishEffect">Problema (efecto)<input type="text" id="ishEffect"></label>
+      <div class="svgwrap"><svg id="ishSvg" viewBox="0 0 1100 360" role="img" aria-label="Diagrama de Ishikawa"></svg></div>
+      <div class="ish-cats" id="ishCats"></div>
+      <p class="note" id="ishCount"></p>
+      <div class="split">
+        <div style="display:flex;flex-direction:column;gap:8px;min-width:0" id="whys"></div>
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+          <div class="detail"><b>Causa raíz propuesta</b><p id="whyRoot" style="margin-top:4px"></p></div>
+          <div class="insight" id="whyTip"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="sim-riesgos">
+    <div class="panel-head">
+      <div><h3>Simulador: matriz de riesgos 3D</h3><p>Cada pilar es un riesgo; su altura es probabilidad × impacto. Agrega los riesgos de tu procedimiento y decide dónde actuar primero.</p></div>
+      <button class="btn sm" id="rkReset">Restablecer ejemplo</button>
+    </div>
+    <div class="panel-body">
+      <div class="split">
+        <div class="stage" id="rkStage"><span class="hint">Arrastra para girar</span>
+          <div class="legend"><span><i style="background:var(--crit)"></i>Alto (6 a 9)</span><span><i style="background:var(--warn)"></i>Medio (3 a 4)</span><span><i style="background:var(--good)"></i>Bajo (1 a 2)</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+          <div class="tw"><table id="rkTable"><thead><tr><th>#</th><th>Riesgo</th><th>P</th><th>I</th><th class="r">Nivel</th><th></th></tr></thead><tbody></tbody></table></div>
+          <div class="grid2" style="gap:8px;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr)">
+            <label class="fld" for="rkName">Nuevo riesgo<input type="text" id="rkName" placeholder="Ej.: rechazo por firma faltante"></label>
+            <label class="fld" for="rkP">Probabilidad<select id="rkP"><option value="1">1 · Baja</option><option value="2" selected>2 · Media</option><option value="3">3 · Alta</option></select></label>
+            <label class="fld" for="rkI">Impacto<select id="rkI"><option value="1">1 · Bajo</option><option value="2" selected>2 · Medio</option><option value="3">3 · Alto</option></select></label>
+          </div>
+          <div class="btns"><button class="btn sm primary" id="rkAdd">Agregar riesgo</button></div>
+          <div class="insight" id="rkInsight"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="sim-beneficio">
+    <div class="panel-head">
+      <div><h3>Simulador: beneficio del plan y escenarios</h3><p>Estima cuánto recupera y ahorra tu plan frente a lo que cuesta. La tabla de escenarios muestra qué tan sensible es el resultado a tus supuestos.</p></div>
+      <span class="tag ilu">Valores de ejemplo</span>
+    </div>
+    <div class="panel-body">
+      <div class="split">
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+          <div class="grid2" style="gap:10px">
+            <label class="fld" for="bnFact">Facturación anual del procedimiento (S/)<input type="number" id="bnFact" value="4420000" step="10000" min="0"></label>
+            <label class="fld" for="bnObs">% del monto observado<input type="number" id="bnObs" value="10" step="0.5" min="0" max="100"></label>
+            <label class="fld" for="bnBrecha">Brecha anual de costo (S/)<input type="number" id="bnBrecha" value="730200" step="1000" min="0"></label>
+            <label class="fld" for="bnCosto">Costo del plan (S/)<input type="number" id="bnCosto" value="23900" step="500" min="0"></label>
+          </div>
+          <div class="range-row"><label class="fld" for="bnRed">Reducción esperada de las observaciones</label><output id="bnRedo"></output><input type="range" id="bnRed" min="0" max="100" step="5" value="50" style="grid-column:1/-1"></div>
+          <div class="range-row"><label class="fld" for="bnCierre">Parte de la brecha de costo que se cierra</label><output id="bnCierreo"></output><input type="range" id="bnCierre" min="0" max="100" step="5" value="30" style="grid-column:1/-1"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+          <div class="kpis" id="bnKpis"></div>
+          <div class="svgwrap"><svg id="bnSvg" viewBox="0 0 520 200" role="img" aria-label="Composición del beneficio" style="min-width:0"></svg></div>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size:15px;margin-bottom:6px">Escenarios: relación beneficio/costo</h4>
+        <div class="tw"><table class="heat" id="bnHeat"></table></div>
+        <p class="note" style="margin-top:6px">Filas: reducción de observaciones. Columnas: parte de la brecha que se cierra. Presenta en tu informe al menos un escenario conservador.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= INTEGRADOR ======================= -->
+<section data-view="integrador" hidden>
+  <div class="uband">
+    <div class="big">TI</div>
+    <div>
+      <h2>Del costo a la mejora: propuesta aplicada en un procedimiento trazador</h2>
+      <p>En equipos de 3 o 4, elijan un procedimiento frecuente o de alto costo de una IPRESS real y demuestren con evidencia cuánto cuesta, cuánto se pierde por fallas de calidad o de sustento y cómo reducir esa pérdida sin afectar la atención. Vale el 35 % del curso.</p>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card" style="display:flex;flex-direction:column;gap:12px">
+      <h3 style="font-size:18px">Tu avance</h3>
+      <div class="prog-row">
+        <svg class="ring" viewBox="0 0 84 84" id="ringAll" role="img" aria-label="Avance total"></svg>
+        <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px" id="progUnits"></div>
+      </div>
+      <p class="note">Se guarda en este navegador. Si cambias de equipo o de navegador, vuelve a marcar.</p>
+      <div class="btns"><button class="btn sm" id="ckReset">Reiniciar mi avance</button><span class="note" id="ckResetMsg" aria-live="polite"></span></div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:12px">
+      <h3 style="font-size:18px">Cómo se califica</h3>
+      <div id="rubricBars" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div class="callout"><span class="ic">!</span><div><b>Regla ética obligatoria:</b> historias y cuentas anonimizadas, sin nombres, DNI ni números de historia (Ley 26842, Ley General de Salud; Ley 29733, de protección de datos personales). Cada equipo firma un compromiso de confidencialidad.</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><div><h3>Lista de entregables por unidad</h3><p>Marca cada paso cuando lo termines. El botón de la derecha te lleva al simulador que ayuda con ese paso.</p></div></div>
+    <div class="panel-body" id="ckList"></div>
+  </div>
+
+  <div class="grid3">
+    <div class="mini"><span class="k">ENTREGABLE 1</span><h4>Informe</h4><p>Máximo 15 páginas más anexos, con un capítulo por unidad.</p></div>
+    <div class="mini"><span class="k">ENTREGABLE 2</span><h4>Excel de cálculo</h4><p>La plantilla del curso: costo estándar, auditoría, Pareto y tablero. Cada cifra debe poder reproducirse.</p></div>
+    <div class="mini"><span class="k">ENTREGABLE 3</span><h4>Exposición</h4><p>10 minutos; exponen todos los integrantes, del diagnóstico al beneficio.</p></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><div><h3>Errores frecuentes y cómo evitarlos</h3><p>Lo que más resta puntos en la corrección.</p></div></div>
+    <div class="panel-body"><div class="grid2" id="errores"></div></div>
+  </div>
+</section>
+
+<!-- ======================= QUIZ ======================= -->
+<section data-view="quiz" hidden>
+  <div class="secthead"><h2>Autoevaluación</h2><span>16 preguntas de decisión y de conceptos. Las opciones cambian de orden en cada intento.</span></div>
+  <div class="panel">
+    <div class="panel-head" style="align-items:center">
+      <div class="seg" id="quizFilter"><button data-v="all" aria-pressed="true">Todas</button><button data-v="1" aria-pressed="false">U1</button><button data-v="2" aria-pressed="false">U2</button><button data-v="3" aria-pressed="false">U3</button><button data-v="4" aria-pressed="false">U4</button></div>
+      <div class="qbar" id="qbar"></div>
+    </div>
+    <div class="panel-body" id="quizBody"></div>
+  </div>
+</section>
+
+<!-- ======================= GLOSARIO ======================= -->
+<section data-view="glosario" hidden>
+  <div class="secthead"><h2>Glosario</h2><span>Términos del curso, con la unidad donde se trabajan.</span></div>
+  <label class="fld" for="glq" style="max-width:420px">Buscar término<input type="text" id="glq" placeholder="Ej.: FUA, costo estándar, hallazgo"></label>
+  <div class="gl" id="glList"></div>
+  <div class="card">
+    <h3 style="font-size:17px;margin-bottom:8px">Normas y referencias del curso</h3>
+    <ul class="clean" style="font-size:14px">
+      <li>Ministerio de Salud. (2016). NTS N.° 029-MINSA/DIGEPRES-V.02, Auditoría de la calidad de la atención en salud (R. M. N.° 502-2016/MINSA).</li>
+      <li>Ministerio de Salud. (2018). NTS N.° 139-MINSA/2018/DGAIN, Gestión de la historia clínica (R. M. N.° 214-2018/MINSA).</li>
+      <li>Seguro Integral de Salud. (2023). Directiva N.° 003-2023-SIS/GREP, control prestacional electrónico.</li>
+      <li>ISO 9001:2015, Sistemas de gestión de la calidad. ISO 7101:2023, Sistemas de gestión de la calidad en organizaciones de salud. ISO 19011:2018, Directrices para la auditoría de sistemas de gestión.</li>
+      <li>Donabedian, A. (1988). The quality of care: How can it be assessed? JAMA, 260(12), 1743-1748.</li>
+      <li>Ishikawa, K. (1986). Guide to quality control. Juran, J. M. y Godfrey, A. B. (1999). Juran's quality handbook. Womack, J. P. y Jones, D. T. (2003). Lean thinking.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <span>Laboratorio de Costos en Auditoría Médica · Curso Costos en auditoría médica · Diplomado de Auditoría Médica.</span>
+  <span><b style="color:var(--ink)">Autor: Gilmer Sánchez Valenzuela</b> · Candidato a Doctor en Economía, UCM España · Especialista en control gubernamental y finanzas públicas.</span>
+  <span>Los casos y cifras de los simuladores son ilustrativos y sirven para aprender. No reemplazan la normativa vigente ni los datos de tu IPRESS.</span>
+</footer>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+"use strict";
+/* ================= utilidades ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const NB = " ";
+function fmt(n, d = 0) {
+  if (!isFinite(n)) return "—";
+  const neg = n < 0; n = Math.abs(n);
+  let [i, f] = n.toFixed(d).split(".");
+  i = i.replace(/\B(?=(\d{3})+(?!\d))/g, NB);
+  return (neg ? "−" : "") + i + (f ? "," + f : "");
+}
+const fmtS = (n, d = 0) => (n < 0 ? "−S/" + NB + fmt(-n, d) : "S/" + NB + fmt(n, d));
+const pct = (x, d = 1) => fmt(x * 100, d) + NB + "%";
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const store = {
+  get(k, def) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch (e) { return def; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } }
+};
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const HAS3D = typeof THREE !== "undefined";
+
+/* ================= motor 3D ================= */
+function roundRectPath(ctx, x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r); ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r); ctx.lineTo(x, y + r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
+}
+function makeLabel(text, { size = 0.4, color = css("--ink"), weight = 600, bg = null } = {}) {
+  const c = document.createElement("canvas"), ctx = c.getContext("2d"), fs = 64;
+  const font = `${weight} ${fs}px Inter, "Segoe UI", system-ui, sans-serif`;
+  ctx.font = font;
+  const w = Math.ceil(ctx.measureText(text).width) + (bg ? 44 : 14), h = Math.ceil(fs * 1.35);
+  c.width = w; c.height = h;
+  ctx.font = font; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  if (bg) { ctx.fillStyle = bg; roundRectPath(ctx, 2, 2, w - 4, h - 4, h / 2.4); ctx.fill(); }
+  ctx.fillStyle = color; ctx.fillText(text, w / 2, h / 2 + 3);
+  const tex = new THREE.CanvasTexture(c); tex.minFilter = THREE.LinearFilter;
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false });
+  const s = new THREE.Sprite(mat); s.scale.set(size * w / h, size, 1); s.renderOrder = 10;
+  return s;
+}
+function disposeObj(o) {
+  o.traverse(x => {
+    if (x.geometry) x.geometry.dispose();
+    if (x.material) { if (x.material.map) x.material.map.dispose(); x.material.dispose(); }
+  });
+}
+class Chart3D {
+  constructor(host, o = {}) {
+    this.host = host; this.ok = false;
+    this.o = Object.assign({ R: 18, phi: 1.02, theta: 0.6, target: [0, 1.6, 0], auto: true, minPhi: 0.3, maxPhi: 1.48 }, o);
+    if (!HAS3D) { this.fail(); return; }
+    try {
+      this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    } catch (e) { this.fail(); return; }
+    this.ok = true;
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    this.canvas = this.renderer.domElement;
+    host.insertBefore(this.canvas, host.firstChild);
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(34, 1, 0.1, 400);
+    this.scene.add(new THREE.HemisphereLight(0xffffff, 0x5a6a78, 0.95));
+    const dl = new THREE.DirectionalLight(0xffffff, 0.75); dl.position.set(10, 18, 12); this.scene.add(dl);
+    const dl2 = new THREE.DirectionalLight(0xffffff, 0.25); dl2.position.set(-12, 8, -6); this.scene.add(dl2);
+    this.bars = new THREE.Group(); this.labels = new THREE.Group(); this.deco = new THREE.Group();
+    this.scene.add(this.bars, this.labels, this.deco);
+    this.items = new Map(); this.clickables = []; this.inView = true; this.drag = null; this.idle = 0;
+    this.theta = this.o.theta; this.phi = this.o.phi; this.R = this.o.R;
+    const c = this.canvas;
+    c.addEventListener("pointerdown", e => { this.drag = { x: e.clientX, y: e.clientY, moved: 0 }; try { c.setPointerCapture(e.pointerId); } catch (_) { } });
+    c.addEventListener("pointermove", e => {
+      if (!this.drag) return;
+      const dx = e.clientX - this.drag.x, dy = e.clientY - this.drag.y;
+      this.drag.moved += Math.abs(dx) + Math.abs(dy); this.drag.x = e.clientX; this.drag.y = e.clientY;
+      this.theta -= dx * 0.008; this.phi = Math.min(this.o.maxPhi, Math.max(this.o.minPhi, this.phi - dy * 0.006)); this.idle = 0;
+    });
+    c.addEventListener("pointerup", e => { if (this.drag && this.drag.moved < 6 && this.onClick) this.pick(e); this.drag = null; });
+    c.addEventListener("pointercancel", () => { this.drag = null; });
+    c.addEventListener("pointermove", e => { if (!this.onClick || this.drag) return; c.style.cursor = this.hit(e) ? "pointer" : "grab"; });
+    new ResizeObserver(() => this.resize()).observe(host);
+    new IntersectionObserver(es => { this.inView = es[0].isIntersecting; }).observe(host);
+    this.resize();
+    Chart3D.all.push(this);
+  }
+  fail() {
+    const p = document.createElement("p");
+    p.className = "note"; p.style.cssText = "position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px";
+    p.textContent = "Tu navegador no puede mostrar este gráfico 3D. Los cálculos y resultados de al lado siguen funcionando.";
+    this.host.appendChild(p);
+  }
+  hit(e) {
+    const r = this.canvas.getBoundingClientRect();
+    const v = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    const rc = new THREE.Raycaster(); rc.setFromCamera(v, this.camera);
+    return rc.intersectObjects(this.clickables, false)[0];
+  }
+  pick(e) { const h = this.hit(e); if (h) this.onClick(h.object.userData); }
+  resize() {
+    if (!this.ok) return;
+    const w = this.host.clientWidth, h = this.host.clientHeight; if (!w || !h) return;
+    this.renderer.setSize(w, h, false); this.camera.aspect = w / h;
+    this.camera.updateProjectionMatrix();
+  }
+  begin() { if (!this.ok) return; for (const m of this.items.values()) m.userData.seen = false; this.clearDeco(); }
+  clearDeco() { while (this.deco.children.length) { const c = this.deco.children.pop(); disposeObj(c); } }
+  addDeco(o) { this.deco.add(o); return o; }
+  bar(key, { x = 0, z = 0, w = 0.8, d = 0.8, h = 1, color, opacity = 1, label = null, lsize = 0.36, lcolor, lbg = null, lift = 0.32, shape = "box", data = null }) {
+    if (!this.ok) return;
+    let m = this.items.get(key);
+    if (!m || m.userData.shape !== shape || m.userData.w !== w) {
+      if (m) this.drop(key);
+      let g;
+      if (shape === "cyl") g = new THREE.CylinderGeometry(w / 2, w / 2, 1, 28); else g = new THREE.BoxGeometry(w, 1, d);
+      g.translate(0, 0.5, 0);
+      m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ roughness: 0.5, metalness: 0.06, transparent: true }));
+      m.scale.y = 0.001; m.userData = { shape, w };
+      this.bars.add(m); this.items.set(key, m);
+    }
+    m.position.set(x, 0, z);
+    m.material.color.set(color); m.material.opacity = opacity; m.material.depthWrite = opacity > 0.6;
+    m.userData.th = Math.max(0.001, h); m.userData.seen = true; m.userData.data = data;
+    if (m.userData.lab) { this.labels.remove(m.userData.lab); disposeObj(m.userData.lab); m.userData.lab = null; }
+    m.userData.lift = lift;
+    if (label) { const s = makeLabel(label, { size: lsize, color: lcolor || css("--ink"), bg: lbg }); this.labels.add(s); m.userData.lab = s; }
+    return m;
+  }
+  drop(key) {
+    const m = this.items.get(key); if (!m) return;
+    if (m.userData.lab) { this.labels.remove(m.userData.lab); disposeObj(m.userData.lab); }
+    this.bars.remove(m); disposeObj(m); this.items.delete(key);
+  }
+  end() {
+    if (!this.ok) return;
+    for (const [k, m] of [...this.items]) if (!m.userData.seen) this.drop(k);
+    this.clickables = [...this.items.values()].filter(m => m.userData.data && m.userData.data.nav);
+  }
+  tick(dt) {
+    if (!this.ok || !this.inView) return;
+    if (this.o.auto && !REDUCED && !this.drag) { this.idle += dt; if (this.idle > 2.5) this.theta += dt * 0.1; }
+    for (const m of this.items.values()) {
+      const t = m.userData.th, s = m.scale.y;
+      if (Math.abs(t - s) > 0.0005) m.scale.y = REDUCED ? t : s + (t - s) * Math.min(1, dt * 6);
+      if (m.userData.lab) m.userData.lab.position.set(m.position.x, m.scale.y + (m.userData.lift || 0.32), m.position.z);
+    }
+    const [tx, ty, tz] = this.o.target, R = this.R;
+    this.camera.position.set(tx + R * Math.sin(this.phi) * Math.sin(this.theta), ty + R * Math.cos(this.phi), tz + R * Math.sin(this.phi) * Math.cos(this.theta));
+    this.camera.lookAt(tx, ty, tz);
+    this.renderer.render(this.scene, this.camera);
+  }
+}
+Chart3D.all = [];
+function floor(ch, w, d, { y = 0, color = css("--surface"), edge = css("--line") } = {}) {
+  if (!ch.ok) return;
+  const g = new THREE.BoxGeometry(w, 0.08, d); g.translate(0, y - 0.04, 0);
+  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color, roughness: 0.9 }));
+  ch.addDeco(m);
+  const e = new THREE.LineSegments(new THREE.EdgesGeometry(g), new THREE.LineBasicMaterial({ color: edge }));
+  ch.addDeco(e);
+}
+function label3(ch, text, x, y, z, opt) { if (!ch.ok) return; const s = makeLabel(text, opt); s.position.set(x, y, z); ch.addDeco(s); return s; }
+function sphere(ch, x, y, z, r, color) { if (!ch.ok) return; const m = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 14), new THREE.MeshStandardMaterial({ color, roughness: 0.4 })); m.position.set(x, y, z); ch.addDeco(m); }
+function tube(ch, a, b, r, color, opacity = 1) {
+  if (!ch.ok) return;
+  const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b), dir = B.clone().sub(A), len = dir.length();
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, len, 12), new THREE.MeshStandardMaterial({ color, roughness: 0.5, transparent: opacity < 1, opacity }));
+  m.position.copy(A.clone().add(B).multiplyScalar(0.5));
+  m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+  ch.addDeco(m);
+}
+let lastT = performance.now();
+function loop(t) {
+  const dt = Math.min(0.05, (t - lastT) / 1000); lastT = t;
+  for (const c of Chart3D.all) if (c.host.offsetParent !== null) c.tick(dt);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* re-dibujo al cambiar de tema */
+const renders = [];
+function onRender(fn) { renders.push(fn); }
+function rerenderAll() { renders.forEach(f => { try { f(); } catch (e) { console.error(e); } }); }
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => setTimeout(rerenderAll, 30));
+new MutationObserver(() => setTimeout(rerenderAll, 30)).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => setTimeout(rerenderAll, 50));
+
+/* ================= navegación ================= */
+const ROUTES = ["inicio", "unidad-1", "unidad-2", "unidad-3", "unidad-4", "integrador", "quiz", "glosario"];
+const inits = {}; const inited = new Set();
+function show(scrollTo) {
+  let h = location.hash.slice(1); if (!ROUTES.includes(h)) h = "inicio";
+  $$("section[data-view]").forEach(v => v.hidden = v.dataset.view !== h);
+  $$(".tabs-nav a").forEach(a => a.getAttribute("href") === "#" + h ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  const cur = $(`.tabs-nav a[href="#${h}"]`); if (cur) cur.scrollIntoView({ block: "nearest", inline: "nearest" });
+  if (!inited.has(h) && inits[h]) { inited.add(h); try { inits[h](); } catch (e) { console.error(e); } }
+  requestAnimationFrame(() => { Chart3D.all.forEach(c => c.resize()); if (scrollTo) { const el = document.getElementById(scrollTo); if (el) el.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" }); } });
+}
+let pendingScroll = null;
+window.addEventListener("hashchange", () => { show(pendingScroll); if (!pendingScroll) window.scrollTo(0, 0); pendingScroll = null; });
+function goTo(view, target) {
+  if (location.hash.slice(1) === view) { show(target); return; }
+  pendingScroll = target; location.hash = view;
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-go]"); if (!b) return;
+  e.preventDefault(); goTo(b.dataset.go, b.dataset.target || null);
+});
+
+/* pestañas internas */
+$$("[data-tabs]").forEach(box => {
+  const btns = $$("[data-tab]", box), panels = $$("[data-panel]", box);
+  const sel = k => { btns.forEach(b => b.setAttribute("aria-selected", b.dataset.tab === k)); panels.forEach(p => p.hidden = p.dataset.panel !== k); };
+  btns.forEach(b => b.addEventListener("click", () => sel(b.dataset.tab)));
+  sel(btns[0].dataset.tab);
+});
+
+/* tarjetas volteables */
+function flips(host, items) {
+  host.innerHTML = items.map(([t, f, b]) => `<button class="flip" aria-expanded="false"><b>${esc(t)}</b><span class="front">${esc(f)}</span><span class="back">${esc(b)}</span></button>`).join("");
+  $$(".flip", host).forEach(x => x.addEventListener("click", () => x.setAttribute("aria-expanded", x.getAttribute("aria-expanded") !== "true")));
+}
+function kpis(host, list) {
+  host.innerHTML = list.map(k => `<div class="kpi ${k.c || ""}"><span>${esc(k.l)}</span><b>${k.v}</b></div>`).join("");
+}
+</script>
+<script>
+"use strict";
+/* ================= INICIO: pilares 3D ================= */
+inits["inicio"] = () => {
+  const ch = new Chart3D($("#heroStage"), { R: 19, phi: 1.08, theta: 0.5, target: [0, 2.2, 0] });
+  ch.onClick = d => goTo(d.nav);
+  const U = [["U1 Calidad", "unidad-1", 2.4], ["U2 Procesos", "unidad-2", 3.3], ["U3 Auditoría", "unidad-3", 4.2], ["U4 Mejora", "unidad-4", 5.1]];
+  function draw() {
+    if (!ch.ok) return;
+    ch.begin();
+    floor(ch, 15, 8, { color: css("--surface") });
+    U.forEach(([t, nav, h], i) => {
+      const x = (i - 1.5) * 3.4, z = 0;
+      ch.bar("u" + i, { x, z, w: 1.7, d: 1.7, h, color: i % 2 ? css("--accent") : css("--band"), label: t, lsize: 0.5, lbg: css("--surface"), lift: 0.75, data: { nav } });
+    });
+    // pequeñas "cuentas" en el piso
+    const rnd = mulberry32(7);
+    for (let k = 0; k < 26; k++) {
+      const x = (rnd() - 0.5) * 13.5, z = (rnd() - 0.5) * 7;
+      if (Math.abs(z) < 2.3 && Math.abs(x) < 6.4) continue;
+      ch.bar("c" + k, { x, z, w: 0.34, d: 0.34, h: 0.15 + rnd() * 0.9, color: rnd() < 0.2 ? css("--crit") : css("--teal"), opacity: 0.9 });
+    }
+    ch.end();
+  }
+  draw(); onRender(draw);
+};
+
+/* ================= UNIDAD 1 ================= */
+inits["unidad-1"] = () => {
+  flips($("#isoFlips"), [
+    ["Enfoque al cliente", "Paciente y financiador", "Medir la satisfacción y reducir los cobros que la IAFAS no reconoce."],
+    ["Liderazgo", "Dirección que fija rumbo", "La dirección fija la meta de cuentas observadas y asigna recursos para lograrla."],
+    ["Compromiso de las personas", "Personal que entiende el porqué", "Médicos y enfermeras saben por qué registrar completo protege al paciente y al hospital."],
+    ["Enfoque a procesos", "Ver la cadena completa", "Gestionar la cesárea de la admisión a la liquidación como un solo proceso."],
+    ["Mejora", "Ciclos continuos", "Aplicar PHVA cada mes sobre los motivos de observación más frecuentes."],
+    ["Decisiones basadas en la evidencia", "Datos, no intuición", "Priorizar con el Pareto de observaciones, no con la opinión del más antiguo."],
+    ["Gestión de las relaciones", "Proveedores y financiadores", "Acordar con la IAFAS reglas claras de sustento y plazos de levantamiento."],
+  ]);
+  // PHVA
+  const PH = [
+    ["P", "Planificar", "Medir la línea base, analizar las causas y fijar la meta. Ejemplo: 18 % de cuentas observadas; meta 8 % en seis meses."],
+    ["H", "Hacer", "Implementar la acción. Ejemplo: plantilla obligatoria de evolución y capacitación a residentes."],
+    ["V", "Verificar", "Medir el indicador cada mes y compararlo con la meta. ¿Bajaron las observaciones por registro?"],
+    ["A", "Actuar", "Si funcionó, estandarizar en el manual de procedimientos; si no, ajustar y volver a planificar."],
+  ];
+  let ph = 0;
+  function arc(cx, cy, R, r, a0, a1) {
+    const p = (a, rr) => [cx + rr * Math.cos(a), cy + rr * Math.sin(a)];
+    const [x0, y0] = p(a0, R), [x1, y1] = p(a1, R), [x2, y2] = p(a1, r), [x3, y3] = p(a0, r);
+    return `M${x0},${y0} A${R},${R} 0 0 1 ${x1},${y1} L${x2},${y2} A${r},${r} 0 0 0 ${x3},${y3} Z`;
+  }
+  function drawPH() {
+    const cx = 180, cy = 150, R = 128, r = 60, gap = 0.04;
+    let s = "";
+    PH.forEach(([k, name], i) => {
+      const a0 = -Math.PI / 2 + i * Math.PI / 2 + gap, a1 = a0 + Math.PI / 2 - 2 * gap, am = (a0 + a1) / 2;
+      const sel = i === ph;
+      s += `<g role="button" tabindex="0" data-ph="${i}" style="cursor:pointer"><path d="${arc(cx, cy, R, r, a0, a1)}" style="fill:${sel ? "var(--accent)" : "var(--surface-2)"};stroke:var(--line)"/>`;
+      const tx = cx + 94 * Math.cos(am), ty = cy + 94 * Math.sin(am);
+      s += `<text x="${tx}" y="${ty - 4}" text-anchor="middle" style="font-family:var(--font-display);font-weight:700;font-size:26px;fill:${sel ? "var(--accent-ink)" : "var(--ink)"}">${k}</text>`;
+      s += `<text x="${tx}" y="${ty + 15}" text-anchor="middle" style="font-size:11.5px;fill:${sel ? "var(--accent-ink)" : "var(--muted)"}">${name}</text></g>`;
+    });
+    s += `<text x="${cx}" y="${cy - 2}" text-anchor="middle" style="font-family:var(--font-display);font-weight:700;font-size:15px;fill:var(--ink)">Mejora</text><text x="${cx}" y="${cy + 16}" text-anchor="middle" style="font-family:var(--font-display);font-weight:700;font-size:15px;fill:var(--ink)">continua</text>`;
+    $("#phvaSvg").innerHTML = s;
+    $("#phvaDetail").innerHTML = `<div class="eyebrow">${PH[ph][0]} · ${PH[ph][1]}</div><p style="margin-top:6px">${PH[ph][2]}</p><p class="note" style="margin-top:10px">Toca otra fase del ciclo. ISO 9001 lo pide en su cláusula 10: mejora, no conformidad y acción correctiva.</p>`;
+    $$("#phvaSvg [data-ph]").forEach(g => {
+      const go = () => { ph = +g.dataset.ph; drawPH(); };
+      g.addEventListener("click", go); g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    });
+  }
+  drawPH();
+
+  // simulador PAF
+  const P = $("#pafP"), E = $("#pafE");
+  const model = (p, e) => {
+    const B = 560 * Math.exp(-p / 70) + 90;
+    const d = 0.25 + 0.6 * (1 - Math.exp(-e / 90));
+    const Fi = B * d * 0.4, Fe = B * (1 - d) * 2.0;
+    return { p, e, Fi, Fe, T: p + e + Fi + Fe };
+  };
+  function best() { let b = null; for (let p = 0; p <= 240; p += 5) for (let e = 0; e <= 240; e += 5) { const m = model(p, e); if (!b || m.T < b.T) b = m; } return b; }
+  const OPT = best();
+  const ch = new Chart3D($("#pafStage"), { R: 17, phi: 1.1, theta: 0.55, target: [0, 2.2, 0] });
+  const mil = v => "S/" + NB + fmt(v) + NB + "mil";
+  function draw() {
+    const p = +P.value, e = +E.value, m = model(p, e);
+    $("#pafPo").textContent = mil(p); $("#pafEo").textContent = mil(e);
+    const fallas = m.Fi + m.Fe;
+    kpis($("#pafKpis"), [
+      { l: "Costo total de la calidad", v: mil(m.T), c: m.T <= OPT.T * 1.03 ? "good" : (m.T > OPT.T * 1.25 ? "crit" : "warn") },
+      { l: "Fallas (internas + externas)", v: mil(fallas) },
+      { l: "Fallas / total", v: pct(fallas / m.T, 0) },
+      { l: "Mínimo posible", v: mil(OPT.T), c: "acc" },
+    ]);
+    let msg;
+    const gap = m.T - OPT.T;
+    if (gap < OPT.T * 0.03) msg = `<b>Estás cerca del punto de menor costo.</b> Más allá, cada sol extra en prevención o evaluación ahorra menos de un sol en fallas.`;
+    else if (p < OPT.p) msg = `<b>Las fallas pesan ${pct(fallas / m.T, 0)} del costo.</b> Invertir más en prevención todavía reduce el costo total: el mínimo está cerca de ${mil(OPT.p)} en prevención y ${mil(OPT.e)} en evaluación, con un ahorro de ${mil(gap)} al año.`;
+    else msg = `<b>Ya pasaste el punto óptimo.</b> El costo total sube ${mil(gap)} porque la prevención y la evaluación crecen más que lo que ahorran en fallas.`;
+    if (e > 60 && p < 30) msg += ` Con poca prevención y mucha evaluación, solo cambias fallas externas por internas: detectas más, pero no evitas.`;
+    $("#pafInsight").innerHTML = msg;
+    // curva
+    const W = 640, H = 230, L = 52, Rr = 16, T0 = 14, B0 = 34, ymax = 1200;
+    const X = v => L + v / 240 * (W - L - Rr), Y = v => T0 + (1 - Math.min(v, ymax) / ymax) * (H - T0 - B0);
+    let s = "";
+    for (let y = 0; y <= ymax; y += 300) s += `<line x1="${L}" x2="${W - Rr}" y1="${Y(y)}" y2="${Y(y)}" style="stroke:var(--line)"/><text x="${L - 8}" y="${Y(y) + 4}" text-anchor="end" style="font-size:11px;fill:var(--muted)">${fmt(y)}</text>`;
+    for (let x = 0; x <= 240; x += 40) s += `<text x="${X(x)}" y="${H - 14}" text-anchor="middle" style="font-size:11px;fill:var(--muted)">${x}</text>`;
+    s += `<text x="${W - Rr}" y="${H - 1}" text-anchor="end" style="font-size:11px;fill:var(--muted)">Prevención (S/ miles al año)</text>`;
+    const path = f => { let d = ""; for (let x = 0; x <= 240; x += 5) d += (x ? "L" : "M") + X(x).toFixed(1) + "," + Y(f(model(x, e))).toFixed(1); return d; };
+    s += `<path d="${path(q => q.p + q.e)}" style="fill:none;stroke:var(--teal);stroke-width:2"/>`;
+    s += `<path d="${path(q => q.Fi + q.Fe)}" style="fill:none;stroke:var(--crit);stroke-width:2;stroke-dasharray:5 4"/>`;
+    s += `<path d="${path(q => q.T)}" style="fill:none;stroke:var(--accent);stroke-width:3.5"/>`;
+    let bp = 0, bt = 1e9; for (let x = 0; x <= 240; x += 5) { const t = model(x, e).T; if (t < bt) { bt = t; bp = x; } }
+    s += `<line x1="${X(bp)}" x2="${X(bp)}" y1="${Y(bt)}" y2="${H - B0}" style="stroke:var(--teal);stroke-dasharray:3 3"/><circle cx="${X(bp)}" cy="${Y(bt)}" r="5" style="fill:var(--surface);stroke:var(--teal);stroke-width:2"/>`;
+    s += `<circle cx="${X(p)}" cy="${Y(m.T)}" r="7" style="fill:var(--accent);stroke:var(--ink);stroke-width:1.5"/>`;
+    s += `<g style="font-size:11.5px"><rect x="${L + 8}" y="6" width="10" height="3" style="fill:var(--accent)"/><text x="${L + 22}" y="11" style="fill:var(--ink)">Costo total</text>
+      <rect x="${L + 102}" y="6" width="10" height="3" style="fill:var(--crit)"/><text x="${L + 116}" y="11" style="fill:var(--ink)">Fallas</text>
+      <rect x="${L + 172}" y="6" width="10" height="3" style="fill:var(--teal)"/><text x="${L + 186}" y="11" style="fill:var(--ink)">Prevención + evaluación</text>
+      <circle cx="${L + 360}" cy="8" r="4" style="fill:var(--surface);stroke:var(--teal);stroke-width:2"/><text x="${L + 369}" y="12" style="fill:var(--ink)">Mínimo con esta evaluación</text></g>`;
+    $("#pafCurve").innerHTML = s;
+    // 3D
+    if (!ch.ok) return;
+    ch.begin();
+    floor(ch, 13, 4.2);
+    const sc = v => v / 1200 * 6.2;
+    const cats = [["Prevención", p, css("--teal")], ["Evaluación", e, css("--teal")], ["Falla interna", m.Fi, css("--warn")], ["Falla externa", m.Fe, css("--crit")], ["Total", m.T, css("--accent")]];
+    cats.forEach(([n, v, c], i) => {
+      const x = (i - 2) * 2.4;
+      ch.bar("b" + i, { x, z: 0, w: 1.5, d: 1.5, h: sc(v), color: c, opacity: i === 1 ? 0.75 : 1, label: fmt(v), lsize: 0.46 });
+      label3(ch, n, x, 0.05, 1.55, { size: 0.36, color: css("--muted") });
+    });
+    ch.end();
+  }
+  [P, E].forEach(x => x.addEventListener("input", draw));
+  $("#pafOpt").addEventListener("click", () => { P.value = OPT.p; E.value = OPT.e; draw(); });
+  $("#pafReset").addEventListener("click", () => { P.value = 40; E.value = 30; draw(); });
+  draw(); onRender(draw);
+};
+
+/* ================= UNIDAD 2 ================= */
+const COMP = ["Recursos humanos", "Medicamentos", "Insumos", "Apoyo diagnóstico", "Sala y equipos", "Hotelería", "Indirectos"];
+const COMP_SHORT = ["RR. HH.", "Medicam.", "Insumos", "Apoyo dx", "Sala", "Hotelería", "Indirectos"];
+const COST_DEF = [
+  ["Recursos humanos", "Gineco-obstetra cirujano", "minuto", 60, 2.5, 75],
+  ["Recursos humanos", "Anestesiólogo", "minuto", 60, 2.5, 70],
+  ["Recursos humanos", "Enfermería y obstetricia", "hora", 16, 18, 21],
+  ["Medicamentos", "Cefazolina 2 g (profilaxis)", "dosis", 1, 12, 6],
+  ["Medicamentos", "Analgesia posoperatoria", "dosis", 6, 8, 10],
+  ["Medicamentos", "Kit de anestesia raquídea", "kit", 1, 85, 1],
+  ["Insumos", "Kit quirúrgico de cesárea", "kit", 1, 320, 1],
+  ["Insumos", "Suturas", "unidad", 3, 25, 3],
+  ["Apoyo diagnóstico", "Perfil preoperatorio", "perfil", 1, 95, 1.6],
+  ["Apoyo diagnóstico", "Ecografía obstétrica", "estudio", 1, 80, 1.2],
+  ["Sala y equipos", "Sala de operaciones", "minuto", 75, 9, 90],
+  ["Hotelería", "Día-cama en hospitalización", "día", 2, 260, 2.6],
+  ["Indirectos", "Apoyo y administración", "caso", 1, 450, 1],
+];
+inits["unidad-2"] = () => {
+  // recorrido de la cuenta
+  const ST = [
+    ["Admisión", "Cobertura", "Verifica la identidad y la cobertura del asegurado. Un error aquí produce observaciones administrativas que nada tienen que ver con la calidad clínica."],
+    ["Atención", "Según la guía", "La prestación se brinda según la guía de práctica clínica. Aquí nace el costo: estancia, medicamentos, exámenes. La auditoría concurrente actúa en esta etapa."],
+    ["Registro", "HC y formato", "Historia clínica (NTS 139) y formato de la IAFAS, como el FUA del SIS. Lo que no se registra no se puede sustentar después."],
+    ["Liquidación", "Tarifa", "Se valoriza con el tarifario o el convenio. La auditoría retrospectiva revisa códigos, cantidades y precios antes de enviar."],
+    ["Envío y control", "IAFAS", "La IAFAS controla y paga. En el SIS: consistencia, evaluación, levantamiento y segunda evaluación, con siete días hábiles por etapa."],
+  ];
+  let st = 1;
+  function drawSt() {
+    $("#cuentaFlow").innerHTML = ST.map(([a, b], i) => `<button class="st" aria-pressed="${i === st}" data-i="${i}"><b>${i + 1}. ${a}</b><span>${b}</span></button>`).join("");
+    $("#cuentaDetail").innerHTML = `<b>${ST[st][0]}.</b> ${ST[st][2]}`;
+    $$("#cuentaFlow .st").forEach(b => b.addEventListener("click", () => { st = +b.dataset.i; drawSt(); }));
+  }
+  drawSt();
+
+  // simulador de costo
+  let rows = COST_DEF.map(r => r.slice());
+  const tb = $("#costTable tbody");
+  const ch = new Chart3D($("#costStage"), { R: 18, phi: 1.08, theta: 0.5, target: [0, 1.9, 0] });
+  function renderTable() {
+    tb.innerHTML = rows.map((r, i) => `<tr data-i="${i}">
+      <td><select data-k="0" aria-label="Componente">${COMP.map(c => `<option${c === r[0] ? " selected" : ""}>${c}</option>`).join("")}</select></td>
+      <td><input type="text" data-k="1" value="${esc(r[1])}" aria-label="Descripción" style="min-width:150px"></td>
+      <td><input type="text" data-k="2" value="${esc(r[2])}" aria-label="Unidad" style="width:76px"></td>
+      <td class="r"><input type="number" data-k="3" value="${r[3]}" step="any" min="0" aria-label="Cantidad estándar"></td>
+      <td class="r"><input type="number" data-k="4" value="${r[4]}" step="any" min="0" aria-label="Precio unitario"></td>
+      <td class="r num" data-o="std"></td>
+      <td class="r"><input type="number" data-k="5" value="${r[5]}" step="any" min="0" aria-label="Cantidad real"></td>
+      <td class="r num" data-o="real"></td><td class="r num" data-o="dev"></td>
+      <td><button class="x" data-del="${i}" aria-label="Quitar fila">×</button></td></tr>`).join("") +
+      `<tr class="tot"><td colspan="5">Total por caso</td><td class="r num" id="tStd"></td><td></td><td class="r num" id="tReal"></td><td class="r num" id="tDev"></td><td></td></tr>`;
+    update();
+  }
+  tb.addEventListener("input", e => {
+    const tr = e.target.closest("tr[data-i]"); if (!tr) return;
+    const i = +tr.dataset.i, k = +e.target.dataset.k;
+    rows[i][k] = k >= 3 ? (parseFloat(e.target.value) || 0) : e.target.value;
+    update();
+  });
+  tb.addEventListener("change", e => { if (e.target.tagName === "SELECT") { const i = +e.target.closest("tr").dataset.i; rows[i][0] = e.target.value; update(); } });
+  tb.addEventListener("click", e => { const b = e.target.closest("[data-del]"); if (!b) return; rows.splice(+b.dataset.del, 1); renderTable(); });
+  $("#costAdd").addEventListener("click", () => { rows.push(["Insumos", "Nuevo recurso", "unidad", 1, 0, 1]); renderTable(); });
+  $("#costReset").addEventListener("click", () => { rows = COST_DEF.map(r => r.slice()); $("#tarifa").value = 3300; $("#casos").value = 1200; renderTable(); });
+  $("#costClear").addEventListener("click", () => { rows = COMP.map(c => [c, "", "", 0, 0, 0]); renderTable(); });
+  ["#tarifa", "#casos"].forEach(s => $(s).addEventListener("input", update));
+  function update() {
+    let tS = 0, tR = 0; const agg = COMP.map(() => [0, 0]);
+    $$("tr[data-i]", tb).forEach(tr => {
+      const r = rows[+tr.dataset.i]; const s = r[3] * r[4], re = r[5] * r[4], d = re - s;
+      tS += s; tR += re; const ci = COMP.indexOf(r[0]); if (ci >= 0) { agg[ci][0] += s; agg[ci][1] += re; }
+      $("[data-o=std]", tr).textContent = fmt(s, 2); $("[data-o=real]", tr).textContent = fmt(re, 2);
+      const dc = $("[data-o=dev]", tr); dc.textContent = (d > 0 ? "+" : "") + fmt(d, 2); dc.style.color = d > 0.005 ? "var(--crit)" : (d < -0.005 ? "var(--good)" : "");
+    });
+    $("#tStd").textContent = fmt(tS, 2); $("#tReal").textContent = fmt(tR, 2); $("#tDev").textContent = (tR - tS > 0 ? "+" : "") + fmt(tR - tS, 2);
+    const tar = parseFloat($("#tarifa").value) || 0, cas = parseFloat($("#casos").value) || 0;
+    const idx = tS ? tR / tS : 0, margen = tar - tR, brecha = (tR - tS) * cas;
+    kpis($("#costKpis"), [
+      { l: "Costo estándar por caso", v: fmtS(tS) },
+      { l: "Costo real por caso", v: fmtS(tR) },
+      { l: "Índice de desviación", v: tS ? fmt(idx, 2) : "—", c: !tS ? "" : idx <= 1.05 ? "good" : idx <= 1.2 ? "warn" : "crit" },
+      { l: "Margen frente a la tarifa", v: tar ? fmtS(margen) : "—", c: !tar ? "" : margen >= 0 ? "good" : "crit" },
+      { l: "Brecha anual de costo", v: fmtS(brecha), c: "acc" },
+    ]);
+    let ins = "";
+    if (!tS) ins = "Escribe las cantidades estándar de tu guía y sus precios para empezar.";
+    else {
+      const devs = agg.map((a, i) => [COMP[i], a[1] - a[0]]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+      const tot = devs.reduce((s, x) => s + x[1], 0);
+      if (!devs.length) ins = "<b>El costo real no supera al estándar.</b> Revisa que las cantidades reales vengan de cuentas auditadas y no de la guía.";
+      else {
+        const top = devs.slice(0, 2);
+        ins = `<b>${top[0][0]}</b> explica ${pct(top[0][1] / tot, 0)} de la desviación` + (top[1] ? ` y <b>${top[1][0].toLowerCase()}</b> otro ${pct(top[1][1] / tot, 0)}` : "") + `. Ahí conviene buscar la causa.`;
+      }
+      if (tar) ins += tar >= tS && tar < tR ? ` La tarifa cubre el costo estándar pero no el real: la pérdida por caso es evitable.` : tar < tS ? ` La tarifa no alcanza ni para el costo estándar: es un tema de convenio, no solo de eficiencia.` : ` La tarifa cubre el costo real.`;
+    }
+    $("#costInsight").innerHTML = ins;
+    // 3D
+    if (!ch.ok) return;
+    ch.begin(); floor(ch, 13.5, 5);
+    const mx = Math.max(1, ...agg.map(a => Math.max(a[0], a[1])));
+    agg.forEach(([s, r], i) => {
+      const x = (i - 3) * 1.85;
+      ch.bar("s" + i, { x, z: -0.5, w: 0.8, d: 0.8, h: s / mx * 4.8, color: css("--teal"), label: s ? fmt(s) : null, lsize: 0.3 });
+      ch.bar("r" + i, { x, z: 0.5, w: 0.8, d: 0.8, h: r / mx * 4.8, color: css("--accent"), label: r ? fmt(r) : null, lsize: 0.3 });
+      label3(ch, COMP_SHORT[i], x, 0.05, 1.75, { size: 0.32, color: css("--muted") });
+    });
+    ch.end();
+  }
+  renderTable(); onRender(update);
+};
+</script>
+<script>
+"use strict";
+/* ================= UNIDAD 3 ================= */
+const MOTIVOS = ["Registro incompleto", "Medicación sin indicación", "Estancia no justificada", "Error de codificación", "Error tarifario", "Documento administrativo faltante", "Examen o procedimiento no pertinente"];
+const MOT_SHORT = ["Registro", "Medicación", "Estancia", "Codificación", "Tarifa", "Administrativo", "No pertinente"];
+const SAMP = { pop: null, sel: null, revealed: false, method: "rand", seed: 11 };
+function genPop(seed) {
+  const rnd = mulberry32(seed);
+  const SV = [["Cirugía", 0.12, 3, 4200], ["Medicina", 0.08, 5, 3600], ["Gineco-obstetricia", 0.10, 2, 3300], ["Pediatría", 0.05, 3, 2600], ["UCI", 0.20, 6, 9800]];
+  const W = [0.26, 0.28, 0.24, 0.12, 0.10];
+  const pop = [];
+  for (let i = 0; i < 200; i++) {
+    let u = rnd(), k = 0; while (u > W[k] && k < 4) { u -= W[k]; k++; }
+    const [srv, rate, std, base] = SV[k];
+    const dias = Math.max(1, Math.round(std + (rnd() - 0.35) * std * 1.4));
+    const monto = Math.round(base * (0.7 + 0.18 * dias / std + rnd() * 0.6));
+    const larga = dias > std + 2, alto = monto > 8000, uci = srv === "UCI";
+    const pErr = Math.min(0.75, rate + (larga ? 0.18 : 0) + (alto ? 0.10 : 0));
+    const err = rnd() < pErr;
+    let mot = null;
+    if (err) {
+      if (larga && rnd() < 0.45) mot = 2;
+      else { const MW = [0.40, 0.25, 0.06, 0.12, 0.08, 0.05, 0.04]; let v = rnd(), j = 0; while (v > MW[j] && j < 6) { v -= MW[j]; j++; } mot = j; }
+    }
+    const obs = err ? Math.round(monto * (0.06 + rnd() * 0.3)) : 0;
+    const risk = (uci ? 3 : 0) + (larga ? 2 : 0) + (alto ? 2 : 0) + rate * 10 + rnd() * 0.5;
+    pop.push({ i, srv, dias, monto, larga, alto, err, mot, obs, risk });
+  }
+  return pop;
+}
+inits["unidad-3"] = () => {
+  flips($("#auditFlips"), [
+    ["Integridad", "La base del profesionalismo", "Actuar con honestidad, diligencia y responsabilidad; no ocultar ni maquillar hallazgos."],
+    ["Presentación imparcial", "Informar con veracidad", "El informe refleja lo que se encontró, incluidas las conformidades y los desacuerdos."],
+    ["Debido cuidado profesional", "Diligencia y juicio", "Aplicar la guía y la norma con criterio clínico, sin atajos."],
+    ["Confidencialidad", "Proteger la información", "La historia clínica es confidencial: se trabaja anonimizada y solo para el fin de la auditoría."],
+    ["Independencia", "No auditar lo propio", "La auditoría médica la hace un médico que no participó en la atención."],
+    ["Enfoque basado en evidencia", "Conclusiones verificables", "Cada hallazgo se apoya en registros que otro auditor podría revisar y llegar a lo mismo."],
+    ["Enfoque basado en riesgos", "Concentrarse en lo que importa", "Priorizar UCI, estancias largas y cuentas de alto monto."],
+  ]);
+
+  // ---------- muestreo ----------
+  const ch = new Chart3D($("#sampStage"), { R: 15.5, phi: 0.92, theta: 0.42, target: [0, 0.6, 0] });
+  const N = $("#sampN");
+  const notes = {
+    rand: "Aleatorio: todas las cuentas tienen la misma probabilidad. La tasa de error de la muestra estima la de todo el mes.",
+    risk: "Dirigido por riesgo: se eligen primero UCI, estancias largas y montos altos. Encuentra más errores y más soles, pero su tasa sobrestima la del total.",
+    mix: "Mixto: la mitad aleatoria para medir y la mitad dirigida para proteger el ingreso. Es lo que suele hacerse en la práctica."
+  };
+  function newPop() { SAMP.pop = genPop(SAMP.seed); SAMP.sel = null; SAMP.revealed = false; }
+  newPop();
+  function pick() {
+    const n = +N.value, pop = SAMP.pop, rnd = mulberry32(SAMP.seed * 31 + n + SAMP.method.length);
+    const randIdx = () => { const idx = pop.map(p => p.i); for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; } return idx; };
+    const byRisk = pop.slice().sort((a, b) => b.risk - a.risk).map(p => p.i);
+    let s;
+    if (SAMP.method === "rand") s = randIdx().slice(0, n);
+    else if (SAMP.method === "risk") s = byRisk.slice(0, n);
+    else { const h = Math.ceil(n / 2); s = byRisk.slice(0, h); const r = randIdx().filter(i => !s.includes(i)); s = s.concat(r.slice(0, n - h)); }
+    SAMP.sel = new Set(s);
+  }
+  function draw() {
+    $("#sampNo").textContent = N.value + " cuentas";
+    $("#sampMethodNote").textContent = notes[SAMP.method];
+    const pop = SAMP.pop, sel = SAMP.sel;
+    // legenda
+    let lg;
+    if (!sel) lg = [["--line", "Riesgo bajo"], ["--teal", "Riesgo medio"], ["--warn", "Riesgo alto (UCI, estancia larga, monto alto)"]];
+    else lg = [["--good", "Auditada: conforme"], ["--crit", "Auditada: con error"]].concat(SAMP.revealed ? [["--warn", "No auditada: error no detectado"]] : [["--line", "No auditada"]]);
+    $("#sampLegend").innerHTML = lg.map(([c, t]) => `<span><i style="background:var(${c})"></i>${t}</span>`).join("");
+    // KPIs
+    const totErr = pop.filter(p => p.err).length, totObs = pop.reduce((s, p) => s + p.obs, 0);
+    if (!sel) {
+      kpis($("#sampKpis"), [{ l: "Cuentas en el mes", v: "200" }, { l: "Facturado en el mes", v: fmtS(pop.reduce((s, p) => s + p.monto, 0)) }, { l: "Cuentas de alto riesgo", v: fmt(pop.filter(p => p.risk >= 3).length) }]);
+    } else {
+      const S = pop.filter(p => sel.has(p.i)), k = S.filter(p => p.err).length, obs = S.reduce((s, p) => s + p.obs, 0), rate = k / S.length;
+      const list = [
+        { l: "Cuentas auditadas", v: fmt(S.length) },
+        { l: "Con error encontradas", v: fmt(k), c: "crit" },
+        { l: "Tasa de error en la muestra", v: pct(rate) },
+        { l: "Monto observado detectado", v: fmtS(obs), c: "acc" },
+      ];
+      if (SAMP.revealed) list.push({ l: "Tasa real del mes", v: pct(totErr / 200) }, { l: "% del monto observado capturado", v: pct(totObs ? obs / totObs : 0), c: "good" });
+      kpis($("#sampKpis"), list);
+      let ins;
+      const tr = totErr / 200;
+      if (!SAMP.revealed) ins = SAMP.method === "rand" ? `Encontraste <b>${k} errores en ${S.length} cuentas (${pct(rate)})</b>. Con muestreo aleatorio esa tasa estima la de todo el mes. Pulsa <b>Revelar la población</b> para comprobarlo.` :
+        `Encontraste <b>${k} errores</b> y <b>${fmtS(obs)}</b> observables. Antes de revelar, piensa: ¿la tasa de ${pct(rate)} representa a todo el mes?`;
+      else {
+        const diff = rate - tr;
+        ins = `La tasa real del mes es <b>${pct(tr)}</b>; tu muestra dio ${pct(rate)} (${diff >= 0 ? "+" : "−"}${fmt(Math.abs(diff) * 100, 1)} puntos). `;
+        ins += SAMP.method === "rand" ? `El aleatorio estima bien la tasa, pero capturó solo ${pct(totObs ? obs / totObs : 0, 0)} del monto observado.` :
+          SAMP.method === "risk" ? `El dirigido capturó ${pct(totObs ? obs / totObs : 0, 0)} del monto observado auditando ${pct(S.length / 200, 0)} de las cuentas, pero su tasa no sirve para estimar el total.` :
+            `El mixto equilibra: capturó ${pct(totObs ? obs / totObs : 0, 0)} del monto y su mitad aleatoria permite estimar la tasa.`;
+        ins += ` Prueba los otros métodos con la misma población.`;
+      }
+      $("#sampInsight").innerHTML = ins;
+    }
+    if (!ch.ok) return;
+    ch.begin();
+    floor(ch, 13, 6.8);
+    const cL = css("--line"), cT = css("--teal"), cW = css("--warn"), cG = css("--good"), cC = css("--crit"), cM = css("--muted");
+    pop.forEach(p => {
+      const c = p.i % 20, r = Math.floor(p.i / 20);
+      const x = (c - 9.5) * 0.62, z = (r - 4.5) * 0.62, h = 0.12 + p.monto / 16000 * 3.2;
+      let col, op = 1;
+      if (!sel) col = p.risk >= 3 ? cW : p.risk >= 1.5 ? cT : cL;
+      else if (sel.has(p.i)) col = p.err ? cC : cG;
+      else if (SAMP.revealed && p.err) { col = cW; op = 0.9; }
+      else { col = cM; op = 0.22; }
+      ch.bar("p" + p.i, { x, z, w: 0.46, d: 0.46, h, color: col, opacity: op });
+    });
+    label3(ch, "Altura = monto facturado", 0, 0.05, 3.9, { size: 0.34, color: css("--muted") });
+    ch.end();
+  }
+  $$("#sampMethod button").forEach(b => b.addEventListener("click", () => {
+    $$("#sampMethod button").forEach(x => x.setAttribute("aria-pressed", x === b)); SAMP.method = b.dataset.v;
+    if (SAMP.sel) pick(); draw();
+  }));
+  N.addEventListener("input", () => { if (SAMP.sel) pick(); draw(); });
+  $("#sampRun").addEventListener("click", () => { pick(); draw(); });
+  $("#sampReveal").addEventListener("click", () => { if (!SAMP.sel) pick(); SAMP.revealed = true; draw(); });
+  $("#sampNew").addEventListener("click", () => { SAMP.seed = Math.floor(Math.random() * 1e6); newPop(); $("#sampInsight").innerHTML = "Nueva población generada. Elige un método y pulsa <b>Auditar la muestra</b>."; draw(); });
+  draw(); onRender(draw);
+
+  // ---------- constructor de hallazgos ----------
+  const F = ["hzTit", "hzCond", "hzCrit", "hzCausa", "hzEf", "hzSol", "hzResp", "hzRec"];
+  const EX = {
+    hzTit: "Registro clínico incompleto",
+    hzCond: "4 de 20 cuentas de cesárea auditadas (20 %) tienen registro incompleto: días sin nota de evolución, epicrisis incompleta y hoja de anestesia sin firma; 1 fue rechazada.",
+    hzCrit: "NTS 139-MINSA/2018/DGAIN: la historia clínica debe estar completa, con evolución diaria, firma y sello del responsable.",
+    hzCausa: "Las notas se escriben en texto libre, no hay plantilla y nadie revisa el registro antes del alta.",
+    hzEf: "Cuentas observadas o rechazadas por la IAFAS y menor capacidad de sustentar la atención.",
+    hzSol: 5470, hzResp: "Jefatura de Gineco-obstetricia",
+    hzRec: "Implementar una plantilla obligatoria de evolución y epicrisis, y control concurrente del registro antes del alta, en 60 días."
+  };
+  const draft = store.get("cam-hz", null);
+  F.forEach(id => { $("#" + id).value = draft ? (draft[id] ?? "") : EX[id]; });
+  const words = s => new Set(s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").split(/[^a-z0-9]+/).filter(w => w.length > 3));
+  function check() {
+    const v = Object.fromEntries(F.map(id => [id, $("#" + id).value.trim()]));
+    store.set("cam-hz", v);
+    const wc = words(v.hzCond), wa = words(v.hzCausa);
+    const inter = [...wa].filter(w => wc.has(w)).length, sim = wa.size ? inter / wa.size : 1;
+    const C = [
+      [/\d/.test(v.hzCond), "La condición incluye un dato (número o porcentaje)."],
+      [/\bde\s+\d+|\d+\s*%|muestra/i.test(v.hzCond), "La condición dice sobre qué muestra (por ejemplo, “4 de 20 cuentas”)."],
+      [/nts|norma|gu[ií]a|convenio|ley|resoluci|directiva|tarifario|iso|protocolo/i.test(v.hzCrit), "El criterio cita una norma, guía, convenio o tarifario."],
+      [v.hzCausa.length > 20 && sim < 0.6, "La causa explica por qué ocurrió y no repite la condición."],
+      [(parseFloat(v.hzSol) || 0) > 0 && v.hzEf.length > 10, "El efecto describe la consecuencia y la cuantifica en soles."],
+      [v.hzRec.length > 20 && v.hzResp.length > 2, "La recomendación tiene responsable y ataca la causa."],
+    ];
+    const ok = C.filter(c => c[0]).length;
+    $("#hzChecks").innerHTML = C.map(([b, t]) => `<div class="chk ${b ? "ok" : "no"}"><i>${b ? "✓" : ""}</i><span>${t}</span></div>`).join("");
+    $("#hzScore").textContent = ok + " de 6";
+    $("#hzBar").style.width = (ok / 6 * 100) + "%";
+    $("#hzBar").style.background = ok === 6 ? "var(--good)" : "var(--accent)";
+    const txt = `${v.hzTit || "Título del hallazgo"}\n\nCondición: ${v.hzCond || "…"}\nCriterio: ${v.hzCrit || "…"}\nCausa: ${v.hzCausa || "…"}\nEfecto: ${v.hzEf || "…"}${v.hzSol ? " (" + fmtS(+v.hzSol) + ")" : ""}\nRecomendación: ${v.hzRec || "…"}${v.hzResp ? " Responsable: " + v.hzResp + "." : ""}`;
+    $("#hzPrev").textContent = txt;
+    return txt;
+  }
+  F.forEach(id => $("#" + id).addEventListener("input", check));
+  $("#hzEx").addEventListener("click", () => { F.forEach(id => $("#" + id).value = EX[id]); check(); });
+  $("#hzClear").addEventListener("click", () => { F.forEach(id => $("#" + id).value = ""); check(); $("#hzCond").focus(); });
+  $("#hzCopy").addEventListener("click", () => {
+    const t = check(), msg = $("#hzCopied");
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents($("#hzPrev")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); msg.textContent = "Texto seleccionado: cópialo con Ctrl+C."; };
+    try { navigator.clipboard.writeText(t).then(() => msg.textContent = "Copiado.", fallback); } catch (e) { fallback(); }
+    setTimeout(() => msg.textContent = "", 3500);
+  });
+  check();
+};
+
+/* ================= UNIDAD 4 ================= */
+const PAR_DEF = [42, 28, 18, 12, 6, 4, 0];
+inits["unidad-4"] = () => {
+  // ---------- Pareto ----------
+  let counts = PAR_DEF.slice();
+  const ch = new Chart3D($("#parStage"), { R: 17, phi: 1.1, theta: 0.35, target: [0, 2.4, 0] });
+  const tb = $("#parTable tbody");
+  function table() {
+    tb.innerHTML = MOTIVOS.map((m, i) => `<tr><td>${m}</td><td class="r"><input type="number" min="0" step="1" value="${counts[i]}" data-i="${i}" aria-label="Cuentas con ${esc(m)}"></td></tr>`).join("");
+  }
+  tb.addEventListener("input", e => { const i = e.target.dataset.i; if (i == null) return; counts[+i] = Math.max(0, parseInt(e.target.value) || 0); draw(); });
+  function draw() {
+    const tot = counts.reduce((a, b) => a + b, 0);
+    const ord = counts.map((c, i) => ({ c, i })).sort((a, b) => b.c - a.c || a.i - b.i);
+    let cum = 0; const rows = ord.map(o => { const prev = cum; cum += tot ? o.c / tot : 0; return { ...o, prev, cum, pri: o.c > 0 && prev < 0.8 }; });
+    const pri = rows.filter(r => r.pri);
+    $("#parInsight").innerHTML = !tot ? "Escribe cuántas cuentas observadas tuvo cada motivo." :
+      `<b>${pri.length} de ${counts.filter(c => c > 0).length} motivos</b> explican ${pct(pri.length ? pri[pri.length - 1].cum : 0, 0)} de las ${fmt(tot)} observaciones: ${pri.map(r => MOTIVOS[r.i].toLowerCase()).join(", ")}. Concentra ahí el análisis de causa raíz y el plan.`;
+    if (!ch.ok) return;
+    ch.begin(); floor(ch, 13, 4.6);
+    const mx = Math.max(1, ...counts), H = 5.2, base = 0.25;
+    const pts = [];
+    rows.forEach((r, k) => {
+      const x = (k - 3) * 1.75;
+      ch.bar("m" + r.i, { x, z: 0, w: 1.1, d: 1.1, h: r.c / mx * 4.2, color: r.pri ? css("--accent") : css("--muted"), opacity: r.pri ? 1 : 0.55, label: String(r.c), lsize: 0.4 });
+      label3(ch, MOT_SHORT[r.i], x, 0.05, 1.5, { size: 0.32, color: css("--muted") });
+      pts.push([x, base + r.cum * H, -0.9]);
+    });
+    if (tot) {
+      pts.forEach((p, k) => { sphere(ch, ...p, 0.13, css("--teal")); if (k) tube(ch, pts[k - 1], p, 0.045, css("--teal")); label3(ch, pct(rows[k].cum, 0), p[0], p[1] + 0.38, p[2], { size: 0.3, color: css("--teal") }); });
+      tube(ch, [-6.6, base + 0.8 * H, -0.9], [6.6, base + 0.8 * H, -0.9], 0.02, css("--crit"), 0.6);
+      label3(ch, "80 %", -6.2, base + 0.8 * H + 0.3, -0.9, { size: 0.3, color: css("--crit") });
+    }
+    ch.end();
+  }
+  $("#parReset").addEventListener("click", () => { counts = PAR_DEF.slice(); table(); draw(); });
+  $("#parFromSamp").addEventListener("click", () => {
+    if (!SAMP.pop || !SAMP.sel) { $("#parInsight").innerHTML = "Primero audita una muestra en el simulador de la <b>Unidad 3</b>; luego vuelve y pulsa este botón."; return; }
+    counts = MOTIVOS.map(() => 0);
+    SAMP.pop.forEach(p => { if (SAMP.sel.has(p.i) && p.err) counts[p.mot]++; });
+    table(); draw();
+  });
+  table(); draw(); onRender(draw);
+
+  // ---------- Ishikawa ----------
+  const CATS = ["Personas", "Métodos", "Materiales", "Sistemas", "Medición", "Entorno"];
+  const ISH_EX = {
+    effect: "20 % de cuentas observadas por registro incompleto",
+    c: { Personas: [["Rotación de residentes sin inducción", 1], ["Sobrecarga en guardia nocturna", 0]], Métodos: [["Sin plantilla de nota de evolución", 1], ["Auditoría solo después del alta", 1]], Materiales: [["Hojas sueltas que se extravían", 1]], Sistemas: [["Historia en papel en hospitalización", 1], ["Sin alerta de firma pendiente", 0]], Medición: [["Sin indicador mensual de registro", 1]], Entorno: [["Más demanda en fines de semana", 0]] }
+  };
+  let ish = store.get("cam-ish", null) || JSON.parse(JSON.stringify(ISH_EX));
+  $("#ishEffect").value = ish.effect;
+  $("#ishEffect").addEventListener("input", e => { ish.effect = e.target.value; saveIsh(); drawIsh(); whyDraw(); });
+  function saveIsh() { store.set("cam-ish", ish); }
+  function wrap(t, n) { const w = t.split(" "), out = []; let l = ""; w.forEach(x => { if ((l + " " + x).trim().length > n) { if (l) out.push(l); l = x; } else l = (l + " " + x).trim(); }); if (l) out.push(l); return out; }
+  function drawIsh() {
+    const sp = 180;
+    let s = `<line x1="40" y1="${sp}" x2="900" y2="${sp}" style="stroke:var(--ink);stroke-width:3"/><polygon points="900,${sp - 8} 916,${sp} 900,${sp + 8}" style="fill:var(--ink)"/>`;
+    s += `<rect x="922" y="${sp - 62}" width="170" height="124" rx="10" style="fill:var(--accent)"/>`;
+    const ef = wrap(ish.effect || "Problema", 20).slice(0, 5);
+    ef.forEach((l, i) => s += `<text x="1007" y="${sp - (ef.length - 1) * 9 + i * 18 + 4}" text-anchor="middle" style="font-size:13px;font-weight:700;fill:var(--accent-ink)">${esc(l)}</text>`);
+    CATS.forEach((c, i) => {
+      const top = i < 3, x0 = [250, 480, 710][i % 3], y0 = top ? 52 : 308, x1 = x0 + 110;
+      s += `<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${sp}" style="stroke:var(--muted);stroke-width:2"/>`;
+      s += `<rect x="${x0 - 58}" y="${top ? y0 - 34 : y0 + 8}" width="116" height="26" rx="13" style="fill:var(--band)"/><text x="${x0}" y="${top ? y0 - 16 : y0 + 26}" text-anchor="middle" style="font-size:13px;font-weight:700;fill:var(--band-ink)">${c}</text>`;
+      const list = (ish.c[c] || []).slice(0, 4);
+      list.forEach(([t, v], k) => {
+        const f = (k + 1) / (list.length + 1), px = x0 + (x1 - x0) * f, py = y0 + (sp - y0) * f;
+        const label = t.length > 28 ? t.slice(0, 27) + "…" : t;
+        s += `<line x1="${px - 8}" y1="${py}" x2="${px}" y2="${py}" style="stroke:var(--muted)"/>`;
+        s += `<text x="${px - 12}" y="${py + 4}" text-anchor="end" style="font-size:12px;${v ? "font-weight:700;fill:var(--good)" : "fill:var(--ink)"}">${v ? "✓ " : ""}${esc(label)}</text>`;
+      });
+    });
+    $("#ishSvg").innerHTML = s;
+    const all = CATS.flatMap(c => ish.c[c] || []), ver = all.filter(x => x[1]).length;
+    $("#ishCount").textContent = `${all.length} causas posibles · ${ver} verificadas con datos. Una causa votada no es una causa probada: busca el dato que la confirme.`;
+  }
+  function cards() {
+    $("#ishCats").innerHTML = CATS.map(c => `<div class="ish-cat"><h4>${c}</h4>${(ish.c[c] || []).map(([t, v], k) => `<div class="cause"><span>${esc(t)}</span><button class="v" aria-pressed="${!!v}" data-c="${c}" data-k="${k}" title="Marcar como verificada">${v ? "Verificada" : "Verificar"}</button><button class="x" data-rm="${c}" data-k="${k}" aria-label="Quitar causa">×</button></div>`).join("")}
+      <div class="row"><input type="text" data-add="${c}" placeholder="Nueva causa" aria-label="Nueva causa en ${c}"><button class="btn sm" data-addb="${c}">+</button></div></div>`).join("");
+  }
+  $("#ishCats").addEventListener("click", e => {
+    const t = e.target;
+    if (t.dataset.c) { const it = ish.c[t.dataset.c][+t.dataset.k]; it[1] = it[1] ? 0 : 1; }
+    else if (t.dataset.rm) ish.c[t.dataset.rm].splice(+t.dataset.k, 1);
+    else if (t.dataset.addb) { const inp = $(`[data-add="${t.dataset.addb}"]`); const v = inp.value.trim(); if (!v) return; (ish.c[t.dataset.addb] ||= []).push([v, 0]); }
+    else return;
+    saveIsh(); cards(); drawIsh();
+  });
+  $("#ishCats").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.dataset.add) { e.preventDefault(); $(`[data-addb="${e.target.dataset.add}"]`).click(); } });
+  $("#ishEx").addEventListener("click", () => { ish = JSON.parse(JSON.stringify(ISH_EX)); $("#ishEffect").value = ish.effect; saveIsh(); cards(); drawIsh(); whys = WHY_EX.slice(); whyInputs(); whyDraw(); });
+  $("#ishClear").addEventListener("click", () => { ish = { effect: "", c: {} }; $("#ishEffect").value = ""; saveIsh(); cards(); drawIsh(); whys = ["", "", "", "", ""]; whyInputs(); whyDraw(); });
+  cards(); drawIsh(); onRender(drawIsh);
+
+  // ---------- cinco porqués ----------
+  const WHY_EX = ["Faltan notas de evolución, firmas o datos de la epicrisis", "Las notas se escriben en texto libre al final del turno y se omiten con sobrecarga", "No hay una plantilla que obligue a registrar los datos mínimos", "Nadie revisa el registro antes del alta", "No existe responsable ni indicador del registro clínico"];
+  let whys = store.get("cam-why", null) || WHY_EX.slice();
+  function whyInputs() {
+    $("#whys").innerHTML = `<div class="fld">Cinco porqués sobre el problema</div>` + whys.map((w, i) => `<label class="fld" for="why${i}">¿Por qué? ${i + 1}<input type="text" id="why${i}" data-w="${i}" value="${esc(w)}"></label>`).join("");
+  }
+  $("#whys").addEventListener("input", e => { const i = e.target.dataset.w; if (i == null) return; whys[+i] = e.target.value; store.set("cam-why", whys); whyDraw(); });
+  function whyDraw() {
+    const filled = whys.map(w => w.trim()).filter(Boolean), root = filled[filled.length - 1] || "";
+    $("#whyRoot").textContent = root || "Responde al menos tres porqués.";
+    let tip;
+    if (filled.length < 3) tip = "Sigue preguntando. Con uno o dos porqués casi siempre te quedas en el síntoma.";
+    else if (/personal|presupuesto|dinero|recursos|falta de m[eé]dicos|minsa|gobierno/i.test(root)) tip = "<b>Cuidado:</b> esa causa depende de terceros. Pregunta una vez más hasta llegar a algo que la IPRESS pueda cambiar con una acción propia.";
+    else tip = "<b>Buena causa raíz</b> si la IPRESS puede eliminarla con una acción concreta. Escríbela como acción correctiva en el plan PHVA, con responsable, plazo e indicador.";
+    $("#whyTip").innerHTML = tip;
+  }
+  whyInputs(); whyDraw();
+
+  // ---------- matriz de riesgos ----------
+  const RK_DEF = [["Registro incompleto de la evolución", 3, 3], ["Estancia prolongada sin criterio", 3, 2], ["Rechazo por documentos sin firma", 2, 3], ["Antibiótico fuera de protocolo", 2, 2], ["Error de codificación", 1, 3]];
+  let rks = store.get("cam-rk", null) || RK_DEF.map(r => r.slice());
+  const rch = new Chart3D($("#rkStage"), { R: 16, phi: 0.95, theta: 0.62, target: [0, 1.0, 0] });
+  const lvl = v => v >= 6 ? ["Alto", "--crit"] : v >= 3 ? ["Medio", "--warn"] : ["Bajo", "--good"];
+  function rkTable() {
+    $("#rkTable tbody").innerHTML = rks.map((r, i) => { const v = r[1] * r[2], [t, c] = lvl(v); return `<tr><td class="mono">R${i + 1}</td><td>${esc(r[0])}</td>
+      <td><select data-i="${i}" data-k="1" aria-label="Probabilidad">${[1, 2, 3].map(n => `<option${n === r[1] ? " selected" : ""}>${n}</option>`).join("")}</select></td>
+      <td><select data-i="${i}" data-k="2" aria-label="Impacto">${[1, 2, 3].map(n => `<option${n === r[2] ? " selected" : ""}>${n}</option>`).join("")}</select></td>
+      <td class="r"><span class="tag" style="background:var(${c}-soft);color:var(${c})">${v} · ${t}</span></td><td><button class="x" data-del="${i}" aria-label="Quitar riesgo">×</button></td></tr>`; }).join("");
+  }
+  $("#rkTable").addEventListener("change", e => { const s = e.target; if (s.dataset.i == null) return; rks[+s.dataset.i][+s.dataset.k] = +s.value; rkSave(); });
+  $("#rkTable").addEventListener("click", e => { const b = e.target.closest("[data-del]"); if (!b) return; rks.splice(+b.dataset.del, 1); rkSave(); });
+  $("#rkAdd").addEventListener("click", () => { const n = $("#rkName").value.trim(); if (!n) { $("#rkName").focus(); return; } rks.push([n, +$("#rkP").value, +$("#rkI").value]); $("#rkName").value = ""; rkSave(); });
+  $("#rkName").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("#rkAdd").click(); } });
+  $("#rkReset").addEventListener("click", () => { rks = RK_DEF.map(r => r.slice()); rkSave(); });
+  function rkSave() { store.set("cam-rk", rks); rkTable(); rkDraw(); }
+  function rkDraw() {
+    const hi = rks.map((r, i) => [r, i, r[1] * r[2]]).sort((a, b) => b[2] - a[2]);
+    const nh = hi.filter(x => x[2] >= 6).length;
+    $("#rkInsight").innerHTML = !rks.length ? "Agrega el primer riesgo de tu procedimiento." :
+      `<b>${nh} riesgo${nh === 1 ? "" : "s"} alto${nh === 1 ? "" : "s"}.</b> Empieza por R${hi[0][1] + 1} (${esc(hi[0][0][0].toLowerCase())}, nivel ${hi[0][2]}). Cada riesgo alto debe tener una acción en el plan PHVA.`;
+    if (!rch.ok) return;
+    rch.begin();
+    const S = 2.25;
+    for (let p = 1; p <= 3; p++) for (let im = 1; im <= 3; im++) {
+      const v = p * im, [, c] = lvl(v);
+      const g = new THREE.BoxGeometry(S - 0.12, 0.1, S - 0.12); g.translate(0, -0.05, 0);
+      const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: css(c), transparent: true, opacity: 0.28, roughness: 0.9 }));
+      m.position.set((im - 2) * S, 0, (2 - p) * S); rch.addDeco(m);
+    }
+    ["Bajo", "Medio", "Alto"].forEach((t, k) => label3(rch, t, (k - 1) * S, 0.05, 1.5 * S + 0.25, { size: 0.32, color: css("--muted") }));
+    ["Alta", "Media", "Baja"].forEach((t, k) => label3(rch, t, -1.5 * S - 0.55, 0.05, (k - 1) * S, { size: 0.32, color: css("--muted") }));
+    label3(rch, "Impacto →", 0, 0.05, 1.5 * S + 0.85, { size: 0.36, color: css("--ink") });
+    label3(rch, "Probabilidad ↑", -1.5 * S - 0.6, 0.05, -1.5 * S - 0.35, { size: 0.36, color: css("--ink") });
+    const cellCount = {};
+    rks.forEach((r, i) => {
+      const key = r[1] + "-" + r[2], n = cellCount[key] = (cellCount[key] || 0) + 1;
+      const ang = (n - 1) * 2.1, off = n > 1 ? 0.55 : 0;
+      const x = (r[2] - 2) * S + Math.cos(ang) * off, z = (2 - r[1]) * S + Math.sin(ang) * off, v = r[1] * r[2];
+      rch.bar("k" + i, { x, z, w: 0.5, h: 0.3 + v / 9 * 3, color: css(lvl(v)[1]), shape: "cyl", label: "R" + (i + 1), lsize: 0.36 });
+    });
+    rch.end();
+  }
+  rkTable(); rkDraw(); onRender(rkDraw);
+
+  // ---------- beneficio ----------
+  const ids = ["bnFact", "bnObs", "bnBrecha", "bnCosto", "bnRed", "bnCierre"];
+  const bv = () => Object.fromEntries(ids.map(i => [i, parseFloat($("#" + i).value) || 0]));
+  const calc = (v, red, cie) => { const mo = v.bnFact * v.bnObs / 100, rec = mo * red, ah = v.bnBrecha * cie, bru = rec + ah; return { mo, rec, ah, bru, neto: bru - v.bnCosto, bc: v.bnCosto ? bru / v.bnCosto : null }; };
+  function bn() {
+    const v = bv(), r = calc(v, v.bnRed / 100, v.bnCierre / 100);
+    $("#bnRedo").textContent = v.bnRed + NB + "%"; $("#bnCierreo").textContent = v.bnCierre + NB + "%";
+    kpis($("#bnKpis"), [
+      { l: "Monto observado al año", v: fmtS(r.mo) },
+      { l: "Recuperación esperada", v: fmtS(r.rec) },
+      { l: "Ahorro de costo", v: fmtS(r.ah) },
+      { l: "Beneficio neto", v: fmtS(r.neto), c: r.neto >= 0 ? "good" : "crit" },
+      { l: "Beneficio / costo", v: r.bc == null ? "—" : fmt(r.bc, 1) + "x", c: "acc" },
+    ]);
+    const items = [["Recuperación", r.rec, "--teal"], ["Ahorro de costo", r.ah, "--teal"], ["Costo del plan", -v.bnCosto, "--crit"], ["Beneficio neto", r.neto, "--accent"]];
+    const mx = Math.max(1, ...items.map(i => Math.abs(i[1]))), L = 130, W = 520 - L - 90;
+    $("#bnSvg").innerHTML = items.map(([t, val, c], k) => { const w = Math.abs(val) / mx * W, y = 18 + k * 44; return `<text x="${L - 10}" y="${y + 17}" text-anchor="end" style="font-size:13px;fill:var(--ink)">${t}</text><rect x="${L}" y="${y}" width="${Math.max(2, w)}" height="26" rx="5" style="fill:var(${c});opacity:${k === 1 ? 0.7 : 1}"/><text x="${L + w + 8}" y="${y + 17}" style="font-size:12.5px;font-family:var(--font-mono);fill:var(--ink)">${fmtS(val)}</text>`; }).join("");
+    const reds = [0.25, 0.5, 0.75], cies = [0.1, 0.3, 0.5];
+    let h = `<thead><tr><th>Reducción \\ Cierre</th>${cies.map(c => `<th class="r">${pct(c, 0)}</th>`).join("")}</tr></thead><tbody>`;
+    reds.forEach(rd => {
+      h += `<tr><th>${pct(rd, 0)}</th>` + cies.map(ci => {
+        const x = calc(v, rd, ci).bc, cur = Math.abs(rd - v.bnRed / 100) < 0.001 && Math.abs(ci - v.bnCierre / 100) < 0.001;
+        const bg = x == null ? "" : x >= 3 ? "var(--good-soft)" : x >= 1 ? "var(--warn-soft)" : "var(--crit-soft)";
+        return `<td style="background:${bg};${cur ? "outline:2px solid var(--ink);outline-offset:-2px" : ""}">${x == null ? "—" : fmt(x, 1) + "x"}</td>`;
+      }).join("") + `</tr>`;
+    });
+    $("#bnHeat").innerHTML = h + "</tbody>";
+  }
+  ids.forEach(i => $("#" + i).addEventListener("input", bn));
+  bn(); onRender(bn);
+};
+</script>
+<script>
+"use strict";
+/* ================= TRABAJO INTEGRADOR ================= */
+const CK = [
+  ["Inicio", [["Formar el equipo de 3 o 4 integrantes y repartir roles"], ["Elegir el procedimiento trazador: frecuente o de alto costo"], ["Firmar el compromiso de confidencialidad"]]],
+  ["Unidad 1 · Diagnóstico", [["Describir el proceso con Donabedian: estructura, proceso y resultado", "unidad-1"], ["Clasificar los costos de la calidad: prevención, evaluación y fallas", "unidad-1", "sim-paf"], ["Definir 3 indicadores con su línea base", "unidad-4"]]],
+  ["Unidad 2 · Costo estándar", [["Armar la receta estándar según la guía clínica", "unidad-2", "sim-costo"], ["Calcular el costo real y la desviación por componente", "unidad-2", "sim-costo"], ["Completar la matriz de requisitos con evidencia", "unidad-2"]]],
+  ["Unidad 3 · Auditoría", [["Auditar al menos 15 cuentas anonimizadas", "unidad-3", "sim-muestreo"], ["Calcular tasa de observación, monto observado y recuperación", "unidad-3", "sim-muestreo"], ["Redactar 3 hallazgos con condición, criterio, causa y efecto", "unidad-3", "sim-hallazgo"]]],
+  ["Unidad 4 · Plan de mejora", [["Armar el Pareto de los motivos de observación", "unidad-4", "sim-pareto"], ["Encontrar la causa raíz con Ishikawa y cinco porqués", "unidad-4", "sim-ishikawa"], ["Construir la matriz de riesgos", "unidad-4", "sim-riesgos"], ["Diseñar el plan PHVA con responsables, plazos y costos"], ["Armar el tablero con línea base y meta", "unidad-4"], ["Estimar el beneficio con supuestos explicados", "unidad-4", "sim-beneficio"]]],
+  ["Entrega final", [["Informe de máximo 15 páginas"], ["Excel de cálculo completo y sin errores"], ["Ensayar la exposición de 10 minutos con todo el equipo"]]],
+];
+inits["integrador"] = () => {
+  let done = store.get("cam-ck", {});
+  const list = $("#ckList");
+  list.innerHTML = CK.map(([g, items], gi) => `<div><h4 style="font-size:15.5px;margin:6px 0 2px">${g}</h4>${items.map(([t, v, tg], ii) => {
+    const id = `ck-${gi}-${ii}`;
+    return `<div class="ck"><input type="checkbox" id="${id}" data-k="${id}"${done[id] ? " checked" : ""}><label for="${id}">${t}</label>${v ? `<button class="btn sm go" data-go="${v}"${tg ? ` data-target="${tg}"` : ""}>Practicar</button>` : ""}</div>`;
+  }).join("")}</div>`).join("");
+  list.addEventListener("change", e => { const k = e.target.dataset.k; if (!k) return; done[k] = e.target.checked; store.set("cam-ck", done); prog(); });
+  $("#ckReset").addEventListener("click", () => { done = {}; store.set("cam-ck", done); $$("#ckList input").forEach(i => i.checked = false); prog(); $("#ckResetMsg").textContent = "Avance reiniciado."; setTimeout(() => $("#ckResetMsg").textContent = "", 3000); });
+  function prog() {
+    let all = 0, ok = 0;
+    $("#progUnits").innerHTML = CK.map(([g, items], gi) => {
+      const n = items.length, k = items.filter((_, ii) => done[`ck-${gi}-${ii}`]).length; all += n; ok += k;
+      return `<div><div style="display:flex;justify-content:space-between;font-size:13px"><span>${g}</span><span class="mono">${k}/${n}</span></div><div class="meter"><i style="width:${k / n * 100}%;${k === n ? "background:var(--good)" : ""}"></i></div></div>`;
+    }).join("");
+    const f = ok / all, R = 34, C = 2 * Math.PI * R;
+    $("#ringAll").innerHTML = `<circle cx="42" cy="42" r="${R}" style="fill:none;stroke:var(--surface-2);stroke-width:9"/><circle cx="42" cy="42" r="${R}" transform="rotate(-90 42 42)" style="fill:none;stroke:${f === 1 ? "var(--good)" : "var(--accent)"};stroke-width:9;stroke-linecap:round;stroke-dasharray:${C * f} ${C}"/><text x="42" y="47" text-anchor="middle" style="font-family:var(--font-mono);font-weight:600;font-size:16px;fill:var(--ink)">${Math.round(f * 100)}%</text>`;
+  }
+  prog();
+  const RB = [["Diagnóstico de calidad y costos", 15], ["Costo estándar y requisitos", 20], ["Auditoría y calidad de los hallazgos", 25], ["Plan de mejora e indicadores", 25], ["Exposición y trabajo en equipo", 15]];
+  $("#rubricBars").innerHTML = RB.map(([t, w]) => `<div><div style="display:flex;justify-content:space-between;font-size:13.5px"><span>${t}</span><span class="mono">${w} %</span></div><div class="meter"><i style="width:${w * 4}%"></i></div></div>`).join("");
+  const ER = [
+    ["Usar el costo real como estándar", "El estándar sale de la guía clínica. Si usas el consumo real, la desviación siempre da cero."],
+    ["Hallazgos sin causa", "Una causa que repite la condición (“no se registró porque falta registro”) no lleva a ninguna recomendación útil."],
+    ["Criterio genérico", "“Según la norma” no basta: cita la NTS, la guía o el convenio y lo que exige."],
+    ["Muestra pequeña o datos sin anonimizar", "Mínimo 15 cuentas. Nunca nombres, DNI ni números de historia clínica."],
+    ["Causa raíz fuera de control", "“Falta de personal” o “falta de presupuesto” dependen de otros. Pregunta otra vez hasta llegar a algo que tu IPRESS pueda cambiar."],
+    ["Supuestos del 100 %", "Reducir todas las observaciones no es creíble. Presenta un escenario conservador y explica cada supuesto."],
+  ];
+  $("#errores").innerHTML = ER.map(([t, d]) => `<div class="mini"><h4>${t}</h4><p>${d}</p></div>`).join("");
+};
+
+/* ================= AUTOEVALUACIÓN ================= */
+const QZ = [
+  { u: 1, q: "Para ahorrar S/ 80 000, el comité propone recortar la capacitación en bioseguridad mientras suben las infecciones de herida operatoria. ¿Qué es correcto?", o: ["Es un error: la capacitación es prevención y recortarla puede elevar fallas más costosas.", "Es correcto: la capacitación es un gasto prescindible.", "Es correcto si se compensa con más auditorías.", "Es indiferente: las infecciones no son un costo del hospital."], e: "La capacitación es costo de prevención. Recortarla puede elevar fallas externas (infecciones, reingresos, estancias) que cuestan mucho más." },
+  { u: 1, q: "Cirugía acumuló S/ 640 000 en objeciones, estancia media de 7,8 días frente a 5 e infección de sitio operatorio de 9 %. Como jefe de auditoría, ¿qué propones?", o: ["Un sistema de calidad con costo estándar, guías e indicadores.", "Auditar todas las cuentas al cierre del año.", "Reducir personal de cirugía para bajar costos.", "Negociar que la IAFAS no objete cuentas."], e: "Ataca las causas: registro, pertinencia, estancia e infecciones. Auditar al cierre llega tarde; recortar personal no resuelve causas; la IAFAS no corrige nada." },
+  { u: 1, q: "Un hospital mide la tasa de reingresos a 30 días. ¿Qué dimensión de Donabedian evalúa?", o: ["Resultado", "Estructura", "Proceso", "Ninguna: es un indicador financiero"], e: "Los reingresos son un efecto de la atención: dimensión de resultado." },
+  { u: 1, q: "Repetir un examen porque el resultado se perdió es un costo de…", o: ["Falla interna", "Prevención", "Evaluación", "Falla externa"], e: "Se corrige dentro de la IPRESS antes de llegar al paciente o a la IAFAS: falla interna." },
+  { u: 2, q: "En una cuenta aparece un medicamento de alto costo sin indicación médica en la historia clínica y la IAFAS lo observa. ¿Qué corresponde?", o: ["No está sustentado; si fue indicado, sustentar con documentos válidos dentro del plazo.", "Completar la historia clínica ahora, con fecha anterior.", "Aceptar el rechazo sin revisar nada más.", "Sustentar solo con el kardex de enfermería."], e: "Reconstruir la historia con fecha anterior es una práctica indebida. El kardex no reemplaza la indicación médica." },
+  { u: 2, q: "La cesárea cuesta S/ 2 900 según la guía y S/ 4 150 en la realidad; el 38 % de sus cuentas son observadas. ¿Qué recomiendas?", o: ["Analizar la desviación por componente y corregir procesos y registros.", "Subir la tarifa para cubrir el costo real.", "Eliminar los exámenes preoperatorios.", "Aceptar las observaciones como pérdida inevitable."], e: "La desviación se explica sobre todo por estancia y repetición de exámenes, que son evitables. Subir la tarifa traslada la ineficiencia al financiador." },
+  { u: 2, q: "¿Qué indica un índice de desviación de 1,25?", o: ["El costo real supera en 25 % al costo estándar.", "El costo estándar supera en 25 % al real.", "La tarifa cubre el 125 % del costo.", "El 25 % de las cuentas fue observado."], e: "Índice de desviación = costo real ÷ costo estándar." },
+  { u: 2, q: "¿Qué norma regula la gestión de la historia clínica en el Perú?", o: ["NTS N.° 139-MINSA/2018/DGAIN", "NTS N.° 029-MINSA/DIGEPRES-V.02", "Directiva N.° 003-2023-SIS/GREP", "ISO 19011:2018"], e: "La NTS 139 (R. M. 214-2018/MINSA) regula la historia clínica; la NTS 029, la auditoría de la calidad; la directiva del SIS, su control prestacional." },
+  { u: 3, q: "El comité asigna al cirujano que operó al paciente para auditar ese caso, porque “es quien mejor lo conoce”. ¿Qué corresponde?", o: ["Que se abstenga: debe auditar un médico que no participó en la atención.", "Que audite: nadie conoce mejor el caso.", "Que audite con apoyo de un colega del mismo servicio.", "Que audite solo la parte administrativa."], e: "Principio de independencia: nadie audita su propio trabajo." },
+  { u: 3, q: "Se auditaron 60 colecistectomías: 27 % con observaciones por S/ 96 mil. ¿Cómo presentas el resultado a la dirección?", o: ["Hallazgos con sus cuatro atributos y recomendaciones con responsable.", "Solo el monto total observado.", "Una lista de cirujanos para sanción.", "Repetir la auditoría con otra muestra."], e: "Condición, criterio, causa y efecto dicen qué corregir. La auditoría no es un mecanismo de sanción." },
+  { u: 3, q: "Quieres estimar la tasa de error de todas las cuentas del mes. ¿Qué muestreo usas?", o: ["Aleatorio", "Dirigido por riesgo", "Las cuentas de mayor monto", "Las que eligió el jefe de servicio"], e: "Solo una muestra aleatoria representa al total. La dirigida encuentra más errores pero sobrestima la tasa." },
+  { u: 3, q: "¿Qué atributo del hallazgo explica por qué ocurrió el problema?", o: ["Causa", "Condición", "Criterio", "Efecto"], e: "La condición es lo que se encontró; el criterio, lo que debía ser; el efecto, la consecuencia; la causa, el porqué." },
+  { u: 4, q: "El Pareto muestra que tres tipos concentran el 80 % de las observaciones y hay pocos recursos. ¿Por dónde empiezas?", o: ["Por el tipo más frecuente, con análisis de causa raíz.", "Por los seis tipos a la vez, con igual esfuerzo.", "Por lo administrativo, porque es lo más fácil.", "Con un curso general para todo el hospital."], e: "El tipo más frecuente concentra el mayor efecto; el análisis de causa raíz evita acciones genéricas." },
+  { u: 4, q: "Hospital con 18 % de cuentas observadas y S/ 1,2 M observados al año; tres tipos explican el 72 %. ¿Qué plan propones?", o: ["PHVA con causa raíz, metas, responsables y tablero.", "Más auditores para revisar el 100 %.", "Sanciones por cada cuenta observada.", "Esperar el próximo control de la IAFAS."], e: "Más auditores eleva costos sin atacar causas; las sanciones generan ocultamiento; esperar deja que el financiador decida." },
+  { u: 4, q: "Cambiar la plantilla de evolución para que no falten datos es…", o: ["Una acción correctiva", "Una corrección", "Un costo de falla", "Un hallazgo"], e: "La corrección arregla la cuenta; la acción correctiva elimina la causa para que no se repita (ISO 9001, 10.2)." },
+  { u: 4, q: "En los cinco porqués llegas a “falta de presupuesto”. ¿Qué haces?", o: ["Seguir preguntando hasta una causa que la IPRESS pueda cambiar.", "Darla por causa raíz y pedir más presupuesto.", "Cambiar de herramienta.", "Descartar el problema."], e: "Una causa raíz útil está bajo el control de quien hace el plan." },
+];
+inits["quiz"] = () => {
+  let filter = "all", qs = [], cur = 0, res = [];
+  function start() {
+    qs = shuffle(QZ.filter(q => filter === "all" || String(q.u) === filter)).map(q => ({ ...q, ord: shuffle(q.o.map((t, i) => ({ t, ok: i === 0 }))) }));
+    cur = 0; res = []; render();
+  }
+  function bar() { $("#qbar").innerHTML = qs.map((_, i) => `<span class="${res[i] === true ? "ok" : res[i] === false ? "bad" : i === cur ? "cur" : ""}"></span>`).join(""); }
+  function render() {
+    bar();
+    const body = $("#quizBody");
+    if (cur >= qs.length) {
+      const ok = res.filter(Boolean).length, key = "cam-quiz-" + filter, best = Math.max(store.get(key, 0), ok); store.set(key, best);
+      const miss = [...new Set(qs.filter((q, i) => !res[i]).map(q => q.u))];
+      body.innerHTML = `<div style="display:flex;flex-direction:column;gap:12px"><h3 style="font-size:24px">${ok} de ${qs.length} correctas</h3>
+        <div class="meter"><i style="width:${ok / qs.length * 100}%;${ok === qs.length ? "background:var(--good)" : ""}"></i></div>
+        <p class="note">Tu mejor resultado en este bloque: ${best} de ${qs.length}.</p>
+        ${miss.length ? `<p>Repasa: ${miss.map(u => `<button class="btn sm" data-go="unidad-${u}">Unidad ${u}</button>`).join(" ")}</p>` : `<p class="insight"><b>Todo correcto.</b> Ya puedes aplicar estos criterios en tu trabajo integrador.</p>`}
+        <div class="btns"><button class="btn primary" id="qAgain">Intentar de nuevo</button></div></div>`;
+      $("#qAgain").addEventListener("click", start); return;
+    }
+    const q = qs[cur];
+    body.innerHTML = `<div class="q"><div class="eyebrow">Pregunta ${cur + 1} de ${qs.length} · Unidad ${q.u}</div><h3 style="font-size:18px;font-family:var(--font-body);font-weight:600;line-height:1.4">${esc(q.q)}</h3>
+      <div class="opts">${q.ord.map((o, i) => `<button class="opt" data-i="${i}"><span class="l">${"ABCD"[i]}</span><span>${esc(o.t)}</span></button>`).join("")}</div><div id="qfb" aria-live="polite"></div></div>`;
+    $$(".opt", body).forEach(b => b.addEventListener("click", () => {
+      const o = q.ord[+b.dataset.i]; res[cur] = o.ok;
+      $$(".opt", body).forEach((x, i) => { x.disabled = true; if (q.ord[i].ok) x.classList.add("ok"); });
+      if (!o.ok) b.classList.add("bad");
+      $("#qfb").innerHTML = `<div class="fb ${o.ok ? "ok" : "bad"}"><b>${o.ok ? "Correcto." : "No es la mejor opción."}</b> ${esc(q.e)}</div><div class="btns" style="margin-top:10px"><button class="btn primary" id="qNext">${cur + 1 < qs.length ? "Siguiente" : "Ver resultado"}</button></div>`;
+      $("#qNext").addEventListener("click", () => { cur++; render(); }); $("#qNext").focus(); bar();
+    }));
+  }
+  $$("#quizFilter button").forEach(b => b.addEventListener("click", () => { $$("#quizFilter button").forEach(x => x.setAttribute("aria-pressed", x === b)); filter = b.dataset.v; start(); }));
+  start();
+};
+
+/* ================= GLOSARIO ================= */
+const GL = [
+  ["Acción correctiva", 4, "Acción que elimina la causa de una no conformidad para que no vuelva a ocurrir (ISO 9001, 10.2)."],
+  ["Auditoría concurrente", 3, "Auditoría que se hace mientras el paciente está hospitalizado; permite corregir a tiempo."],
+  ["Auditoría de la calidad de la atención", 3, "Evaluación sistemática de la atención frente a criterios, regulada por la NTS 029-MINSA/DIGEPRES-V.02."],
+  ["Auditoría médica", 3, "Revisión del acto médico por médicos que no participaron en la atención."],
+  ["Auditoría retrospectiva", 3, "Auditoría después del alta, antes o después de facturar."],
+  ["Causa raíz", 4, "Causa que, si se elimina, evita que el problema se repita."],
+  ["Centro de costo", 2, "Unidad que acumula costos: final, intermedio o de apoyo."],
+  ["CIE-10", 2, "Clasificación internacional de enfermedades usada para codificar diagnósticos."],
+  ["Condición", 3, "Atributo del hallazgo: lo que se encontró, con dato y muestra."],
+  ["Control prestacional", 2, "Revisión que hace la IAFAS de las prestaciones registradas; en el SIS lo regula la Directiva 003-2023-SIS/GREP."],
+  ["Costeo por actividades (ABC)", 2, "Asigna costos a actividades y de ahí a cada paciente según sus inductores."],
+  ["Costo directo", 2, "Se asigna sin dudas a la atención, como un medicamento."],
+  ["Costo estándar", 2, "Costo esperado de un procedimiento según su protocolo: Σ (cantidad estándar × precio) + indirectos."],
+  ["Costo fijo", 2, "No cambia con el volumen en el corto plazo, como la planilla."],
+  ["Costo indirecto", 2, "Se reparte entre servicios, como limpieza o administración."],
+  ["Costo variable", 2, "Crece con cada atención, como los insumos."],
+  ["Costos de la calidad", 1, "Prevención, evaluación, falla interna y falla externa."],
+  ["Criterio de auditoría", 3, "Requisito de referencia: guía, norma, convenio o tarifario."],
+  ["Cuenta observada", 3, "Cuenta con una observación que puede sustentarse o rectificarse."],
+  ["Cuenta rechazada", 3, "Prestación que la IAFAS no reconoce para el pago."],
+  ["Donabedian", 1, "Modelo que evalúa la calidad en estructura, proceso y resultado."],
+  ["Efecto", 3, "Atributo del hallazgo: la consecuencia, de preferencia en soles."],
+  ["Epicrisis", 2, "Resumen de la hospitalización que se elabora al alta."],
+  ["Evidencia objetiva", 3, "Registros y hechos verificables que sustentan un hallazgo."],
+  ["FUA", 2, "Formato Único de Atención del SIS, donde se registra cada prestación."],
+  ["Guía de práctica clínica", 2, "Recomendaciones para el diagnóstico y tratamiento; es el estándar de pertinencia."],
+  ["Hallazgo", 3, "Resultado de comparar evidencia y criterio; se redacta con condición, criterio, causa y efecto."],
+  ["Historia clínica", 2, "Documento médico-legal de la atención, regulado por la NTS 139-MINSA/2018/DGAIN."],
+  ["IAFAS", 1, "Institución administradora de fondos de aseguramiento en salud: SIS, EsSalud, EPS, aseguradoras."],
+  ["Índice de desviación", 2, "Costo real ÷ costo estándar."],
+  ["IPRESS", 1, "Institución prestadora de servicios de salud."],
+  ["Ishikawa", 4, "Diagrama causa-efecto en categorías: personas, métodos, materiales, sistemas, medición y entorno."],
+  ["ISO 7101", 1, "Norma de 2023 de sistemas de gestión de la calidad para organizaciones de salud."],
+  ["ISO 19011", 3, "Directrices para auditar sistemas de gestión: principios, programa y proceso de auditoría."],
+  ["Lean", 4, "Enfoque que elimina desperdicios: lo que consume recursos sin agregar valor al paciente."],
+  ["Línea base", 4, "Valor del indicador antes de la mejora; punto de partida para medir el avance."],
+  ["Matriz de riesgos", 4, "Ubica cada riesgo por probabilidad e impacto para decidir dónde actuar."],
+  ["Muestreo aleatorio", 3, "Todas las cuentas tienen la misma probabilidad de ser elegidas; permite estimar la tasa del total."],
+  ["Muestreo dirigido por riesgo", 3, "Prioriza las cuentas de mayor riesgo; encuentra más errores pero no estima el total."],
+  ["Pareto", 4, "Ordena los motivos de mayor a menor y muestra el acumulado: pocos explican la mayoría."],
+  ["PHVA", 1, "Planificar, hacer, verificar, actuar: el ciclo de la mejora continua."],
+  ["PNUME", 2, "Petitorio Nacional Único de Medicamentos Esenciales."],
+  ["Procedimiento trazador", 4, "Procedimiento frecuente o de alto costo que se usa para analizar todo el proceso."],
+  ["SUSALUD", 1, "Superintendencia Nacional de Salud: supervisa a IAFAS e IPRESS."],
+];
+inits["glosario"] = () => {
+  const q = $("#glq");
+  function draw() {
+    const t = q.value.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+    const n = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+    const L = GL.filter(([a, , d]) => !t || n(a).includes(t) || n(d).includes(t));
+    $("#glList").innerHTML = L.length ? L.map(([a, u, d]) => `<div class="mini"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b>${a}</b><button class="tag" data-go="unidad-${u}" style="border:0;cursor:pointer">U${u}</button></div><p>${d}</p></div>`).join("") : `<p class="note">No hay términos que coincidan con “${esc(q.value)}”.</p>`;
+  }
+  q.addEventListener("input", draw); draw();
+};
+
+/* arranque */
+show();
+</script>
+
+</body></html>
